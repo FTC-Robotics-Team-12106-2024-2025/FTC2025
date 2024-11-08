@@ -31,17 +31,13 @@ public class MotorControlsForTeleOp extends LinearOpMode {
         //DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide"); //Slot 0
         
        DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
-       DcMotor armTwo = hardwareMap.get(DcMotor.class,"armTwo");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
 
        // Setting arm position
        armOne.setTargetPosition(0);
-       armTwo.setTargetPosition(0);
        armOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       armTwo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        armOne.setPower(.65);
-       armTwo.setPower(.65);
 
        // Setting up the IMU
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -151,36 +147,6 @@ public class MotorControlsForTeleOp extends LinearOpMode {
             leftSlide.setPower(0);
         }
         */
-        //Arm Code I USED TRIGGERS LETS GOOO
-        // double armPower= armOpen-armClose;
-        // armOne.setPower(armPower*0.65);
-        // // armOne.setPower(-armOpen);
-        // // armTwo.setPower(-armOpen);
-        // armTwo.setPower(armPower*0.65);
-        //lowers by tenth of a second
-           /* if (fuRoshan > 0) {
-            armOne.setPower(-0.5);
-            armTwo.setPower(-0.5);
-            sleep(1);
-            armOne.setPower(-0.3);
-            armTwo.setPower(-0.3);
-            sleep(1);
-            armOne.setPower(-0.1);
-            armTwo.setPower(-0.1);
-            sleep(1);
-            armOne.setPower(-0.05);
-            armTwo.setPower(-0.05);
-            sleep(1);
-            armOne.setPower(-0.025);
-            armTwo.setPower(-0.025);
-            sleep(1);
-            armOne.setPower(0);
-            armTwo.setPower(0);
-            sleep(1);
-            armTwo.setPower(0.025);
-            armOne.setPower(0.025);
-            
-            }*/
             
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
@@ -221,10 +187,8 @@ public class MotorControlsForTeleOp extends LinearOpMode {
         // }
         
         armOne.setTargetPosition(armPose);
-        armTwo.setTargetPosition(armPose);
             
         telemetry.addData("Arm One: ", armOne.getCurrentPosition());
-        telemetry.addData("Arm Two: ", armTwo.getCurrentPosition());
 
        
        if (clawOpen) {
