@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.auton;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -57,7 +57,7 @@ public class AutonForRightField extends LinearOpMode {
         backLeft.setPower(bl/maxNumber);
         backRight.setPower(br/maxNumber); 
         //Should do telemetery data thingy I hate this.
-        telemetry.addData("Front Left",fl/maxNumber;
+        telemetry.addData("Front Left",fl/maxNumber);
         telemetry.addData("Front Right",fr/maxNumber);
         telemetry.addData("Back Left",bl/maxNumber);
         telemetry.addData("Back Right",br/maxNumber);

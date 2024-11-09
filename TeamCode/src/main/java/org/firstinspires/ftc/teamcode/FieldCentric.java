@@ -1,22 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 
 @TeleOp
 
-public class MotorControlsForTeleOp extends LinearOpMode {
+public class FieldCentric extends LinearOpMode {
      Gamepad driveGamepad = new Gamepad();
      Gamepad manipulatorGamepad = new Gamepad();
 
      // Variables
      public int armPose = 0;
-     public double wrist = .4;
+     public double wrist = 4;
     @Override
     
     //Defines the motor
@@ -44,17 +43,20 @@ public class MotorControlsForTeleOp extends LinearOpMode {
        armTwo.setPower(.65);
 
        // Setting up the IMU
-        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMUimu.Parameters(
+        /* It doesn't work :(
+
+        BNO055IMU.Parameters parameters = new BNO055IMU imu.Parameters(
                 new RevHubOrientationOnRobot (
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
                         RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
                 )
         );
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);*/
+        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
-
-
         waitForStart();
         
         if (isStopRequested()) return;
@@ -105,11 +107,18 @@ public class MotorControlsForTeleOp extends LinearOpMode {
              double linearCPR = 72.1;
 
 
+             double currentHeading = imu.getAngularOrientation().firstAngle;
+             double headingOff = currentHeading;
+             double degreeOff = currentHeading-headingOff;
+             double circleRadii = Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
 
-             double fl = (y+x);
-             double fr = (x-y);
-             double bl = (y-x);
-             double br = (-y-x);
+             double xRot = circleRadii*(Math.cos(0)*Math.cos(degreeOff)-Math.sin(0)*Math.sin(degreeOff));
+             double yRot = circleRadii*(Math.sin(Math.toRadians(90))*Math.cos(degreeOff)-Math.cos(Math.toRadians(90))*Math.sin(degreeOff));
+
+             double fl = (yRot+xRot);
+             double fr = (xRot-yRot);
+             double bl = (yRot-xRot);
+             double br = (-yRot-xRot);
                if (rotateRight) {
                 fl = 0.85;
                 fr = 0.85;
