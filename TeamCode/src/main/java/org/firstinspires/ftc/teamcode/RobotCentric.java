@@ -47,7 +47,7 @@ public class RobotCentric extends LinearOpMode {
        // Setting up the IMU
         /* It doesn't work :(
 
-        BNO055IMU.Parameters parameters = new BNO055IMUimu.Parameters(
+        BNO055IMU.Parameters parameters = new BNO055IMU imu.Parameters(
                 new RevHubOrientationOnRobot (
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
                         RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
@@ -93,8 +93,6 @@ public class RobotCentric extends LinearOpMode {
                  y = -0.25f;
              }
 
-             boolean rotateRight = driveGamepad.right_bumper;
-             boolean rotateLeft = driveGamepad.left_bumper;
              boolean honk = driveGamepad.left_stick_button;
 
              //
@@ -104,8 +102,8 @@ public class RobotCentric extends LinearOpMode {
              boolean verticalUp = manipulatorGamepad.dpad_up;
              //For down-movement of linear slide
              boolean verticalDown = manipulatorGamepad.dpad_down;
-             double armClose = manipulatorGamepad.right_trigger;
-             double armOpen = manipulatorGamepad.left_trigger;
+             double rotateRight = manipulatorGamepad.right_trigger;
+             double rotateLeft = manipulatorGamepad.left_trigger;
              double clawPosX = manipulatorGamepad.left_stick_x;
              double clawPosY = -manipulatorGamepad.left_stick_y;
 
@@ -122,32 +120,14 @@ public class RobotCentric extends LinearOpMode {
              double xRot = Math.cos(degreeOff);
              double yRot = Math.sin(degreeOff);*/
 
-             double fl = (y+x);
-             double fr = (x-y);
-             double bl = (y-x);
-             double br = (-y-x);
-               if (rotateRight) {
-                fl = 0.85;
-                fr = 0.85;
-                bl = 0.85;
-                br = 0.85;
-             }
-             if (rotateLeft) {
-                 fl = -0.85;
-                 fr = -0.85;
-                 bl = -0.85;
-                 br = -0.85;
-             }
-            if (!rotateRight && !rotateLeft) {
-                if (x == 0 && y == 0) {
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0);
-                }
-            }
+            double combinedRotation = .85*(rotateRight-rotateLeft);
+            double fl = (y+x+combinedRotation);
+            double fr = (x-y-combinedRotation);
+            double bl = (y-x+combinedRotation);
+            double br = (-y-x-combinedRotation);
+
             //stops it from going greater than 1/-1
-             double maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
+            double maxNumber = Math.max(Math.abs(x)+Math.abs(y)+Math.abs(combinedRotation),1);
              //powers the motor for wheels
             frontLeft.setPower(fl/maxNumber*0.5);
             frontRight.setPower(fr/maxNumber*0.5);

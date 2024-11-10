@@ -85,8 +85,6 @@ public class FieldCentric extends LinearOpMode {
                  y = -0.25f;
              }
 
-             boolean rotateRight = driveGamepad.right_bumper;
-             boolean rotateLeft = driveGamepad.left_bumper;
              boolean honk = driveGamepad.left_stick_button;
 
              //
@@ -96,8 +94,8 @@ public class FieldCentric extends LinearOpMode {
              boolean verticalUp = manipulatorGamepad.dpad_up;
              //For down-movement of linear slide
              boolean verticalDown = manipulatorGamepad.dpad_down;
-             double armClose = manipulatorGamepad.right_trigger;
-             double armOpen = manipulatorGamepad.left_trigger;
+             double rotateRight = manipulatorGamepad.right_trigger;
+             double rotateLeft = manipulatorGamepad.left_trigger;
              double clawPosX = manipulatorGamepad.left_stick_x;
              double clawPosY = -manipulatorGamepad.left_stick_y;
 
@@ -115,32 +113,14 @@ public class FieldCentric extends LinearOpMode {
              double xRot = circleRadii*(Math.cos(0)*Math.cos(degreeOff)-Math.sin(0)*Math.sin(degreeOff));
              double yRot = circleRadii*(Math.sin(Math.toRadians(90))*Math.cos(degreeOff)-Math.cos(Math.toRadians(90))*Math.sin(degreeOff));
 
-             double fl = (yRot+xRot);
-             double fr = (xRot-yRot);
-             double bl = (yRot-xRot);
-             double br = (-yRot-xRot);
-               if (rotateRight) {
-                fl = 0.85;
-                fr = 0.85;
-                bl = 0.85;
-                br = 0.85;
-             }
-             if (rotateLeft) {
-                 fl = -0.85;
-                 fr = -0.85;
-                 bl = -0.85;
-                 br = -0.85;
-             }
-            if (!rotateRight && !rotateLeft) {
-                if (x == 0 && y == 0) {
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0);
-                }
-            }
+             double combinedRotation = .85*(rotateRight-rotateLeft);
+             double fl = (yRot+xRot+combinedRotation);
+             double fr = (xRot-yRot-combinedRotation);
+             double bl = (yRot-xRot+combinedRotation);
+             double br = (-yRot-xRot-combinedRotation);
+
             //stops it from going greater than 1/-1
-             double maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
+             double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(combinedRotation),1);
              //powers the motor for wheels
             frontLeft.setPower(fl/maxNumber*0.5);
             frontRight.setPower(fr/maxNumber*0.5);
