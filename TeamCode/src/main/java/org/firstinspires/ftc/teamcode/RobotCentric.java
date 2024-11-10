@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.android.AndroidSoundPool;
+import android.media.MediaPlayer;
 
 @TeleOp
 
@@ -22,7 +23,7 @@ public class RobotCentric extends LinearOpMode {
     
     //Defines the motor
     public void runOpMode() {
-        // Drive Motors
+        // Drive Motor
         DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft"); //Port 0
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight"); //Port 1
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft"); 
@@ -61,13 +62,20 @@ public class RobotCentric extends LinearOpMode {
         imu.initialize(parameters);
 
 
-        AndroidSoundPool horns = new AndroidSoundPool();
+        //AndroidSoundPool horns = new AndroidSoundPool();
+        MediaPlayer mediaPlayer;
+        mediaPlayer = MediaPlayer.create(hardwareMap.appContext, R.raw.horn);
+
+
         //horns.initialize(1);
 
 
         waitForStart();
         
-        if (isStopRequested()) return;
+        if (isStopRequested()) {
+            mediaPlayer.release();
+            return;
+        }
         
         while (opModeIsActive()) {
             // Getting inputs
@@ -92,8 +100,6 @@ public class RobotCentric extends LinearOpMode {
              if (driveGamepad.dpad_down) {
                  y = -0.25f;
              }
-
-             boolean honk = driveGamepad.left_stick_button;
 
              //
             // Linear Slide
@@ -133,6 +139,15 @@ public class RobotCentric extends LinearOpMode {
             frontRight.setPower(fr/maxNumber*0.5);
             backLeft.setPower(bl/maxNumber*0.5);
             backRight.setPower(br/maxNumber*0.5);
+
+            if (driveGamepad.start) {
+                if (!mediaPlayer.isPlaying())
+                    mediaPlayer.start();
+                else {
+                    mediaPlayer.pause();
+                    mediaPlayer.seekTo(0);
+                }
+            }
         
         //temp code
         

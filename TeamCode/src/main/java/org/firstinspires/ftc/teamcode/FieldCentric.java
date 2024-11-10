@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.media.MediaPlayer;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -57,9 +59,16 @@ public class FieldCentric extends LinearOpMode {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
+
+        MediaPlayer mediaPlayer;
+        mediaPlayer = MediaPlayer.create(hardwareMap.appContext, R.raw.horn);
+
         waitForStart();
-        
-        if (isStopRequested()) return;
+
+        if (isStopRequested()) {
+            mediaPlayer.release();
+            return;
+        }
         
         while (opModeIsActive()) {
             // Getting inputs
@@ -126,7 +135,15 @@ public class FieldCentric extends LinearOpMode {
             frontRight.setPower(fr/maxNumber*0.5);
             backLeft.setPower(bl/maxNumber*0.5);
             backRight.setPower(br/maxNumber*0.5);
-        
+
+            if (driveGamepad.start) {
+                if (!mediaPlayer.isPlaying())
+                    mediaPlayer.start();
+                else {
+                    mediaPlayer.pause();
+                    mediaPlayer.seekTo(0);
+                }
+            }
         //temp code
         
         /*
