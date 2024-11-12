@@ -32,17 +32,13 @@ public class FieldCentric extends LinearOpMode {
         //DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide"); //Slot 0
         
        DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
-       DcMotor armTwo = hardwareMap.get(DcMotor.class,"armTwo");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
 
        // Setting arm position
        armOne.setTargetPosition(0);
-       armTwo.setTargetPosition(0);
        armOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       armTwo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        armOne.setPower(.65);
-       armTwo.setPower(.65);
 
        // Setting up the IMU
         /* It doesn't work :(
@@ -227,10 +223,8 @@ public class FieldCentric extends LinearOpMode {
         // }
         
         armOne.setTargetPosition(armPose);
-        armTwo.setTargetPosition(armPose);
             
         telemetry.addData("Arm One: ", armOne.getCurrentPosition());
-        telemetry.addData("Arm Two: ", armTwo.getCurrentPosition());
 
        
        if (clawOpen) {
