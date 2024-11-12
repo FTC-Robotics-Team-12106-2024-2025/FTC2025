@@ -33,29 +33,15 @@ public class RobotCentric extends LinearOpMode {
         //DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide"); //Slot 0
         
        DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
-       DcMotor armTwo = hardwareMap.get(DcMotor.class,"armTwo");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
 
        // Setting arm position
        armOne.setTargetPosition(0);
-       armTwo.setTargetPosition(0);
        armOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       armTwo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        armOne.setPower(.65);
-       armTwo.setPower(.65);
 
-       // Setting up the IMU
-        /* It doesn't work :(
 
-        BNO055IMU.Parameters parameters = new BNO055IMU imu.Parameters(
-                new RevHubOrientationOnRobot (
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
-                )
-        );
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);*/
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -119,13 +105,6 @@ public class RobotCentric extends LinearOpMode {
              double linearCPR = 72.1;
 
 
-             /*double currentHeading = imu.getAngularOrientation().firstAngle;
-             double headingOff = currentHeading;
-             double degreeOff = currentHeading-headingOff;
-
-             double xRot = Math.cos(degreeOff);
-             double yRot = Math.sin(degreeOff);*/
-
             double combinedRotation = .85*(rotateRight-rotateLeft);
             double fl = (y+x+combinedRotation);
             double fr = (x-y-combinedRotation);
@@ -162,36 +141,7 @@ public class RobotCentric extends LinearOpMode {
             leftSlide.setPower(0);
         }
         */
-        //Arm Code I USED TRIGGERS LETS GOOO
-        // double armPower= armOpen-armClose;
-        // armOne.setPower(armPower*0.65);
-        // // armOne.setPower(-armOpen);
-        // // armTwo.setPower(-armOpen);
-        // armTwo.setPower(armPower*0.65);
-        //lowers by tenth of a second
-           /* if (fuRoshan > 0) {
-            armOne.setPower(-0.5);
-            armTwo.setPower(-0.5);
-            sleep(1);
-            armOne.setPower(-0.3);
-            armTwo.setPower(-0.3);
-            sleep(1);
-            armOne.setPower(-0.1);
-            armTwo.setPower(-0.1);
-            sleep(1);
-            armOne.setPower(-0.05);
-            armTwo.setPower(-0.05);
-            sleep(1);
-            armOne.setPower(-0.025);
-            armTwo.setPower(-0.025);
-            sleep(1);
-            armOne.setPower(0);
-            armTwo.setPower(0);
-            sleep(1);
-            armTwo.setPower(0.025);
-            armOne.setPower(0.025);
-            
-            }*/
+       
             
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
@@ -223,19 +173,11 @@ public class RobotCentric extends LinearOpMode {
             armPose = -72;
         }
 
-        // if (Math.abs(armOne.getCurrentPosition() - armThing) <= 2) {
-        //     armOne.setTargetPosition(armOne.getCurrentPosition());
-        //     armTwo.setTargetPosition(armTwo.getCurrentPosition());
-        // } else {
-        //     armOne.setTargetPosition(armThing);
-        //     armTwo.setTargetPosition(armThing);
-        // }
+
         
         armOne.setTargetPosition(armPose);
-        armTwo.setTargetPosition(armPose);
             
         telemetry.addData("Arm One: ", armOne.getCurrentPosition());
-        telemetry.addData("Arm Two: ", armTwo.getCurrentPosition());
 
        
        if (clawOpen) {
@@ -262,65 +204,14 @@ public class RobotCentric extends LinearOpMode {
        }
        clawRotate.setPosition(wrist);
        
-    //     double clawPosition = clawClamp.getPosition();
-    //     if (clawPosY > 0) {
-    //         clawRotate.setPosition(0.5);
-    //     } 
-    //     if (clawPosY < 0) {
-    //         clawRotate.setPosition(0);
-    //     }
-    //     if (clawPosX < 0) {
-    //         clawRotate.setPosition(0.25);
-    //     }
-    //     if (clawPosX > 0) {
-    //         clawRotate.setPosition(0.75);
-    //     }
-    // double clawMove = 0;
-    //     //more if statements YAY!!!
-    //     int clawTest = 0;
-    //     if (clawOpen) {
-    //         clawClamp.setPosition(0);
-    //         clawTest = 1;
-    //         telemetry.addData("Actually Reads Input: ", clawTest);
 
-    //     }
-    //     if (clawClose) {
-    //         clawClamp.setPosition(1);
-    //         clawTest = 2;
-    //         telemetry.addData("Reads Input: ", clawTest);
-    //     }
 
          
   
-        /*double botHeading = imu.getAngularOrientation().firstAngle;
-         
-         double triX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-         double triY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-         telemetry.addData("TriX: ",triX);
-         telemetry.addData("TriY: ",triY);
-         telemetry.addData("botHeading: ",botHeading);*/
-         //fl is front left, br is back right, etc.
-        
-         /*
-         double fl = (triY+triX);
-         double fr = (triX-triY);
-         double bl = (triY-triX);
-         double br = (-triY-triX);
-         */
-        //stops it from going greater than 1/-1
-        //  maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
-        //  //powers the motor for wheels
-        // frontLeft.setPower(fl/maxNumber);
-        // frontRight.setPower(fr/maxNumber);
-        // backLeft.setPower(bl/maxNumber);
-        // backRight.setPower(br/maxNumber); 
+
         telemetry.update();
     
-        
-       /*int soundID = hardwareMap.apContext.getResources().getIdentifier("horn", "raw", hardwareMap.appContext.getPackageName());
-         if (soundID != 0 && honk == True) {
-             SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, soundID);
-         }*/
+
 
         
         
