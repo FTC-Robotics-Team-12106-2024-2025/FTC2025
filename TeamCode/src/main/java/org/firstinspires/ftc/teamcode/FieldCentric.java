@@ -207,29 +207,7 @@ public class FieldCentric extends LinearOpMode {
        
  
          
-  
-        /*double botHeading = imu.getAngularOrientation().firstAngle;
-         
-         double triX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-         double triY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-         telemetry.addData("TriX: ",triX);
-         telemetry.addData("TriY: ",triY);
-         telemetry.addData("botHeading: ",botHeading);*/
-         //fl is front left, br is back right, etc.
-        
-         /*
-         double fl = (triY+triX);
-         double fr = (triX-triY);
-         double bl = (triY-triX);
-         double br = (-triY-triX);
-         */
-        //stops it from going greater than 1/-1
-        //  maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
-        //  //powers the motor for wheels
-        // frontLeft.setPower(fl/maxNumber);
-        // frontRight.setPower(fr/maxNumber);
-        // backLeft.setPower(bl/maxNumber);
-        // backRight.setPower(br/maxNumber); 
+
         telemetry.update();
     
         
