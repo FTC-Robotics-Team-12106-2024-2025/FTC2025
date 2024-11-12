@@ -40,17 +40,7 @@ public class FieldCentric extends LinearOpMode {
        armOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        armOne.setPower(.65);
 
-       // Setting up the IMU
-        /* It doesn't work :(
 
-        BNO055IMU.Parameters parameters = new BNO055IMU imu.Parameters(
-                new RevHubOrientationOnRobot (
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
-                )
-        );
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);*/
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -185,13 +175,6 @@ public class FieldCentric extends LinearOpMode {
             armPose = -72;
         }
 
-        // if (Math.abs(armOne.getCurrentPosition() - armThing) <= 2) {
-        //     armOne.setTargetPosition(armOne.getCurrentPosition());
-        //     armTwo.setTargetPosition(armTwo.getCurrentPosition());
-        // } else {
-        //     armOne.setTargetPosition(armThing);
-        //     armTwo.setTargetPosition(armThing);
-        // }
         
         armOne.setTargetPosition(armPose);
             
@@ -222,34 +205,7 @@ public class FieldCentric extends LinearOpMode {
        }
        clawRotate.setPosition(wrist);
        
-    //     double clawPosition = clawClamp.getPosition();
-    //     if (clawPosY > 0) {
-    //         clawRotate.setPosition(0.5);
-    //     } 
-    //     if (clawPosY < 0) {
-    //         clawRotate.setPosition(0);
-    //     }
-    //     if (clawPosX < 0) {
-    //         clawRotate.setPosition(0.25);
-    //     }
-    //     if (clawPosX > 0) {
-    //         clawRotate.setPosition(0.75);
-    //     }
-    // double clawMove = 0;
-    //     //more if statements YAY!!!
-    //     int clawTest = 0;
-    //     if (clawOpen) {
-    //         clawClamp.setPosition(0);
-    //         clawTest = 1;
-    //         telemetry.addData("Actually Reads Input: ", clawTest);
-
-    //     }
-    //     if (clawClose) {
-    //         clawClamp.setPosition(1);
-    //         clawTest = 2;
-    //         telemetry.addData("Reads Input: ", clawTest);
-    //     }
-
+ 
          
   
         /*double botHeading = imu.getAngularOrientation().firstAngle;
@@ -277,10 +233,7 @@ public class FieldCentric extends LinearOpMode {
         telemetry.update();
     
         
-       /*int soundID = hardwareMap.apContext.getResources().getIdentifier("horn", "raw", hardwareMap.appContext.getPackageName());
-         if (soundID != 0 && honk == True) {
-             SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, soundID);
-         }*/
+  
 
         
         
