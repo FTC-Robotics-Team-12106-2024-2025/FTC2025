@@ -158,36 +158,7 @@ public class RobotCentric extends LinearOpMode {
             leftSlide.setPower(0);
         }
         */
-        //Arm Code I USED TRIGGERS LETS GOOO
-        // double armPower= armOpen-armClose;
-        // armOne.setPower(armPower*0.65);
-        // // armOne.setPower(-armOpen);
-        // // armTwo.setPower(-armOpen);
-        // armTwo.setPower(armPower*0.65);
-        //lowers by tenth of a second
-           /* if (fuRoshan > 0) {
-            armOne.setPower(-0.5);
-            armTwo.setPower(-0.5);
-            sleep(1);
-            armOne.setPower(-0.3);
-            armTwo.setPower(-0.3);
-            sleep(1);
-            armOne.setPower(-0.1);
-            armTwo.setPower(-0.1);
-            sleep(1);
-            armOne.setPower(-0.05);
-            armTwo.setPower(-0.05);
-            sleep(1);
-            armOne.setPower(-0.025);
-            armTwo.setPower(-0.025);
-            sleep(1);
-            armOne.setPower(0);
-            armTwo.setPower(0);
-            sleep(1);
-            armTwo.setPower(0.025);
-            armOne.setPower(0.025);
-            
-            }*/
+       
             
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
