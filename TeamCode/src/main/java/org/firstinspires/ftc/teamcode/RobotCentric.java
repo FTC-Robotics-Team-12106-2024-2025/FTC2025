@@ -204,58 +204,11 @@ public class RobotCentric extends LinearOpMode {
        }
        clawRotate.setPosition(wrist);
        
-    //     double clawPosition = clawClamp.getPosition();
-    //     if (clawPosY > 0) {
-    //         clawRotate.setPosition(0.5);
-    //     } 
-    //     if (clawPosY < 0) {
-    //         clawRotate.setPosition(0);
-    //     }
-    //     if (clawPosX < 0) {
-    //         clawRotate.setPosition(0.25);
-    //     }
-    //     if (clawPosX > 0) {
-    //         clawRotate.setPosition(0.75);
-    //     }
-    // double clawMove = 0;
-    //     //more if statements YAY!!!
-    //     int clawTest = 0;
-    //     if (clawOpen) {
-    //         clawClamp.setPosition(0);
-    //         clawTest = 1;
-    //         telemetry.addData("Actually Reads Input: ", clawTest);
 
-    //     }
-    //     if (clawClose) {
-    //         clawClamp.setPosition(1);
-    //         clawTest = 2;
-    //         telemetry.addData("Reads Input: ", clawTest);
-    //     }
 
          
   
-        /*double botHeading = imu.getAngularOrientation().firstAngle;
-         
-         double triX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-         double triY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-         telemetry.addData("TriX: ",triX);
-         telemetry.addData("TriY: ",triY);
-         telemetry.addData("botHeading: ",botHeading);*/
-         //fl is front left, br is back right, etc.
-        
-         /*
-         double fl = (triY+triX);
-         double fr = (triX-triY);
-         double bl = (triY-triX);
-         double br = (-triY-triX);
-         */
-        //stops it from going greater than 1/-1
-        //  maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
-        //  //powers the motor for wheels
-        // frontLeft.setPower(fl/maxNumber);
-        // frontRight.setPower(fr/maxNumber);
-        // backLeft.setPower(bl/maxNumber);
-        // backRight.setPower(br/maxNumber); 
+
         telemetry.update();
     
 
