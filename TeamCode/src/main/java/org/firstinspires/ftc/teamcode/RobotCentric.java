@@ -41,17 +41,7 @@ public class RobotCentric extends LinearOpMode {
        armOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        armOne.setPower(.65);
 
-       // Setting up the IMU
-        /* It doesn't work :(
 
-        BNO055IMU.Parameters parameters = new BNO055IMU imu.Parameters(
-                new RevHubOrientationOnRobot (
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
-                )
-        );
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);*/
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -114,13 +104,6 @@ public class RobotCentric extends LinearOpMode {
              double wheelCPR = 423.2116; //Counts per revolution
              double linearCPR = 72.1;
 
-
-             /*double currentHeading = imu.getAngularOrientation().firstAngle;
-             double headingOff = currentHeading;
-             double degreeOff = currentHeading-headingOff;
-
-             double xRot = Math.cos(degreeOff);
-             double yRot = Math.sin(degreeOff);*/
 
             double combinedRotation = .85*(rotateRight-rotateLeft);
             double fl = (y+x+combinedRotation);
@@ -190,13 +173,7 @@ public class RobotCentric extends LinearOpMode {
             armPose = -72;
         }
 
-        // if (Math.abs(armOne.getCurrentPosition() - armThing) <= 2) {
-        //     armOne.setTargetPosition(armOne.getCurrentPosition());
-        //     armTwo.setTargetPosition(armTwo.getCurrentPosition());
-        // } else {
-        //     armOne.setTargetPosition(armThing);
-        //     armTwo.setTargetPosition(armThing);
-        // }
+
         
         armOne.setTargetPosition(armPose);
             
@@ -281,11 +258,7 @@ public class RobotCentric extends LinearOpMode {
         // backRight.setPower(br/maxNumber); 
         telemetry.update();
     
-        
-       /*int soundID = hardwareMap.apContext.getResources().getIdentifier("horn", "raw", hardwareMap.appContext.getPackageName());
-         if (soundID != 0 && honk == True) {
-             SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, soundID);
-         }*/
+
 
         
         
