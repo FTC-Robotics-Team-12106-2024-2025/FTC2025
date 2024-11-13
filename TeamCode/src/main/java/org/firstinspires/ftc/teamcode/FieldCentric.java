@@ -40,17 +40,7 @@ public class FieldCentric extends LinearOpMode {
        armOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        armOne.setPower(.65);
 
-       // Setting up the IMU
-        /* It doesn't work :(
 
-        BNO055IMU.Parameters parameters = new BNO055IMU imu.Parameters(
-                new RevHubOrientationOnRobot (
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
-                )
-        );
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);*/
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -99,8 +89,8 @@ public class FieldCentric extends LinearOpMode {
              boolean verticalUp = manipulatorGamepad.dpad_up;
              //For down-movement of linear slide
              boolean verticalDown = manipulatorGamepad.dpad_down;
-             double rotateRight = manipulatorGamepad.right_trigger;
-             double rotateLeft = manipulatorGamepad.left_trigger;
+             double rotateRight = driveGamepad.right_trigger;
+             double rotateLeft = driveGamepad.left_trigger;
              double clawPosX = manipulatorGamepad.left_stick_x;
              double clawPosY = -manipulatorGamepad.left_stick_y;
 
@@ -111,18 +101,17 @@ public class FieldCentric extends LinearOpMode {
 
 
              double currentHeading = imu.getAngularOrientation().firstAngle;
-             double headingOff = currentHeading;
-             double degreeOff = currentHeading-headingOff;
+             double degreeOff = 0-currentHeading;
              double circleRadii = Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
 
-             double xRot = circleRadii*(Math.cos(0)*Math.cos(degreeOff)-Math.sin(0)*Math.sin(degreeOff));
-             double yRot = circleRadii*(Math.sin(Math.toRadians(90))*Math.cos(degreeOff)-Math.cos(Math.toRadians(90))*Math.sin(degreeOff));
+             double xRot = circleRadii*(Math.cos(0)*Math.cos(degreeOff)-Math.sin(Math.toRadians(90))*Math.sin(degreeOff));
+             double yRot = circleRadii*(Math.sin(Math.toRadians(90))*Math.cos(degreeOff)-Math.cos(Math.toRadians(0))*Math.sin(degreeOff));
 
              double combinedRotation = .85*(rotateRight-rotateLeft);
              double fl = (yRot+xRot+combinedRotation);
-             double fr = (xRot-yRot-combinedRotation);
+             double fr = (xRot-yRot+combinedRotation);
              double bl = (yRot-xRot+combinedRotation);
-             double br = (-yRot-xRot-combinedRotation);
+             double br = (-yRot-xRot+combinedRotation);
 
             //stops it from going greater than 1/-1
              double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(combinedRotation),1);
@@ -153,36 +142,7 @@ public class FieldCentric extends LinearOpMode {
             leftSlide.setPower(0);
         }
         */
-        //Arm Code I USED TRIGGERS LETS GOOO
-        // double armPower= armOpen-armClose;
-        // armOne.setPower(armPower*0.65);
-        // // armOne.setPower(-armOpen);
-        // // armTwo.setPower(-armOpen);
-        // armTwo.setPower(armPower*0.65);
-        //lowers by tenth of a second
-           /* if (fuRoshan > 0) {
-            armOne.setPower(-0.5);
-            armTwo.setPower(-0.5);
-            sleep(1);
-            armOne.setPower(-0.3);
-            armTwo.setPower(-0.3);
-            sleep(1);
-            armOne.setPower(-0.1);
-            armTwo.setPower(-0.1);
-            sleep(1);
-            armOne.setPower(-0.05);
-            armTwo.setPower(-0.05);
-            sleep(1);
-            armOne.setPower(-0.025);
-            armTwo.setPower(-0.025);
-            sleep(1);
-            armOne.setPower(0);
-            armTwo.setPower(0);
-            sleep(1);
-            armTwo.setPower(0.025);
-            armOne.setPower(0.025);
-            
-            }*/
+
             
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
@@ -214,13 +174,7 @@ public class FieldCentric extends LinearOpMode {
             armPose = -72;
         }
 
-        // if (Math.abs(armOne.getCurrentPosition() - armThing) <= 2) {
-        //     armOne.setTargetPosition(armOne.getCurrentPosition());
-        //     armTwo.setTargetPosition(armTwo.getCurrentPosition());
-        // } else {
-        //     armOne.setTargetPosition(armThing);
-        //     armTwo.setTargetPosition(armThing);
-        // }
+
         
         armOne.setTargetPosition(armPose);
             
@@ -250,66 +204,15 @@ public class FieldCentric extends LinearOpMode {
            wrist = .4;
        }
        clawRotate.setPosition(wrist);
-       
-    //     double clawPosition = clawClamp.getPosition();
-    //     if (clawPosY > 0) {
-    //         clawRotate.setPosition(0.5);
-    //     } 
-    //     if (clawPosY < 0) {
-    //         clawRotate.setPosition(0);
-    //     }
-    //     if (clawPosX < 0) {
-    //         clawRotate.setPosition(0.25);
-    //     }
-    //     if (clawPosX > 0) {
-    //         clawRotate.setPosition(0.75);
-    //     }
-    // double clawMove = 0;
-    //     //more if statements YAY!!!
-    //     int clawTest = 0;
-    //     if (clawOpen) {
-    //         clawClamp.setPosition(0);
-    //         clawTest = 1;
-    //         telemetry.addData("Actually Reads Input: ", clawTest);
 
-    //     }
-    //     if (clawClose) {
-    //         clawClamp.setPosition(1);
-    //         clawTest = 2;
-    //         telemetry.addData("Reads Input: ", clawTest);
-    //     }
 
          
   
-        /*double botHeading = imu.getAngularOrientation().firstAngle;
-         
-         double triX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-         double triY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-         telemetry.addData("TriX: ",triX);
-         telemetry.addData("TriY: ",triY);
-         telemetry.addData("botHeading: ",botHeading);*/
-         //fl is front left, br is back right, etc.
-        
-         /*
-         double fl = (triY+triX);
-         double fr = (triX-triY);
-         double bl = (triY-triX);
-         double br = (-triY-triX);
-         */
-        //stops it from going greater than 1/-1
-        //  maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
-        //  //powers the motor for wheels
-        // frontLeft.setPower(fl/maxNumber);
-        // frontRight.setPower(fr/maxNumber);
-        // backLeft.setPower(bl/maxNumber);
-        // backRight.setPower(br/maxNumber); 
+
         telemetry.update();
     
         
-       /*int soundID = hardwareMap.apContext.getResources().getIdentifier("horn", "raw", hardwareMap.appContext.getPackageName());
-         if (soundID != 0 && honk == True) {
-             SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, soundID);
-         }*/
+
 
         
         
