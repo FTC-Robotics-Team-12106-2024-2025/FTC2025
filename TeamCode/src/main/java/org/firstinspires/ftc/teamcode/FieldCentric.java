@@ -174,7 +174,6 @@ public class FieldCentric extends LinearOpMode {
             armPose = -72;
         }
 
-
         
         armOne.setTargetPosition(armPose);
             
@@ -205,9 +204,6 @@ public class FieldCentric extends LinearOpMode {
        }
        clawRotate.setPosition(wrist);
 
-
-         
-  
 
         telemetry.update();
     
