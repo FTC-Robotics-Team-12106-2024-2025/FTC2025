@@ -130,7 +130,8 @@ public class FieldCentric extends LinearOpMode {
                 }
             }
         //temp code
-        
+
+
         /*
         if (verticalUp) {
             leftSlide.setPower(0.5);
