@@ -123,70 +123,70 @@ public class AutonRightV1 extends LinearOpMode {
        }
     }
         //Code for moving in different directions. may have to reverse
-        public void moveForward(int seconds) {
+        public void moveForward(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + seconds*100); //Im using tenths of a seconds, not seconds btw
+        long stop = (durationSucks + tenths*100); //Im using tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
             moveWheel(0,0.5);
         }
     }
-        public void moveBackward(int seconds) {
+        public void moveBackward(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + seconds*100);
+            long stop = (durationSucks + tenths*100);
             while (System. currentTimeMillis() < stop) {
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(0,-0.5);
         }
     }
     //Hopefully strafe code works
-        public void strafeRight(int seconds) {
+        public void strafeRight(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + seconds*100);
+            long stop = (durationSucks + tenths*100);
             while (System. currentTimeMillis() < stop) {
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(0.5,0);
         }
     }
-        public void strafeLeft(int seconds) {
+        public void strafeLeft(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + seconds*100);
+            long stop = (durationSucks + tenths*100);
                 while (System. currentTimeMillis() < stop) {
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(-0.5,0);
         }
     }
-       public void rotateLeft(int seconds) {
+       public void rotateLeft(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + seconds*100);
+            long stop = (durationSucks + tenths*100);
                 while (System. currentTimeMillis() < stop) {
                 turn(true,false);
         }
     }
-    public void rotateRight(int seconds) {
+    public void rotateRight(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + seconds*100);
+            long stop = (durationSucks + tenths*100);
                 while (System. currentTimeMillis() < stop) {
                 turn(false,true);
         }
     }
-    
+
      public void runOpMode() {
         DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft"); 
+        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
         DcMotor leftSlide = hardwareMap.get(DcMotor.class,"leftSlide");
         DcMotor rightSlide = hardwareMap.get(DcMotor.class,"rightSlide");

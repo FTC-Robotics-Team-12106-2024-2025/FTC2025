@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 
 @TeleOp
 
+
 public class RobotCentric extends LinearOpMode {
      Gamepad driveGamepad = new Gamepad();
      Gamepad manipulatorGamepad = new Gamepad();
@@ -105,6 +106,8 @@ public class RobotCentric extends LinearOpMode {
              double linearCPR = 72.1;
 
 
+
+
             double combinedRotation = .85*(rotateRight-rotateLeft);
             double fl = (y+x+combinedRotation);
             double fr = (x-y-combinedRotation);
@@ -140,13 +143,8 @@ public class RobotCentric extends LinearOpMode {
             if (verticalUp && verticalDown == false) {
             leftSlide.setPower(0);
         }
-
       */
             // Arm Movement
-        
-       
-            
-
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
         }
@@ -176,7 +174,6 @@ public class RobotCentric extends LinearOpMode {
         if (manipulatorGamepad.square) {
             armPose = -72;
         }
-
 
 
         armOne.setTargetPosition(armPose);
@@ -209,16 +206,9 @@ public class RobotCentric extends LinearOpMode {
        clawRotate.setPosition(wrist);
        
 
-
         telemetry.update();
     
         
-
-
-
-    
-
-
 
         
         
