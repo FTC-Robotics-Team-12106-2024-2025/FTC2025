@@ -127,7 +127,7 @@ public class FieldCentric extends LinearOpMode {
             backLeft.setPower(bl/maxNumber*0.5);
             backRight.setPower(br/maxNumber*0.5);
 
-            if (driveGamepad.start) {
+            if (driveGamepad.guide) {
                 if (!mediaPlayer.isPlaying())
                     mediaPlayer.start();
                 else {
