@@ -12,7 +12,6 @@ import android.media.MediaPlayer;
 
 @TeleOp
 
-
 public class RobotCentric extends LinearOpMode {
      Gamepad driveGamepad = new Gamepad();
      Gamepad manipulatorGamepad = new Gamepad();
@@ -20,6 +19,7 @@ public class RobotCentric extends LinearOpMode {
      // Variables
      public int armPose = 0;
      public double wrist = 4;
+     public int slidePose = 0;
     @Override
     
     //Defines the motor
@@ -29,9 +29,8 @@ public class RobotCentric extends LinearOpMode {
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight"); //Port 1
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft"); 
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
-
-        // Linear Slide
-        //DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide"); //Slot 0
+        DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        DcMotor rightSlide = hardwareMap.get(DcMotor.class,"rightSlide");
         
        DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
@@ -41,6 +40,11 @@ public class RobotCentric extends LinearOpMode {
        armOne.setTargetPosition(0);
        armOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        armOne.setPower(.65);
+       leftSlide.setTargetPosition(0);
+       leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       rightSlide.setTargetPosition(0);
+       rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       rightSlide.setPower(.65);
 
 
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -92,18 +96,11 @@ public class RobotCentric extends LinearOpMode {
             // Linear Slide
             //
              //For up-movement of linear slide
-             boolean verticalUp = manipulatorGamepad.dpad_up;
-             //For down-movement of linear slide
-             boolean verticalDown = manipulatorGamepad.dpad_down;
              double rotateRight = driveGamepad.right_trigger;
              double rotateLeft = driveGamepad.left_trigger;
-             double clawPosX = manipulatorGamepad.left_stick_x;
-             double clawPosY = -manipulatorGamepad.left_stick_y;
 
              boolean clawOpen = manipulatorGamepad.left_bumper;
              boolean clawClose = manipulatorGamepad.right_bumper;
-             double wheelCPR = 423.2116; //Counts per revolution
-             double linearCPR = 72.1;
 
 
 
@@ -133,17 +130,8 @@ public class RobotCentric extends LinearOpMode {
         
         //temp code
         
-        /*
-        if (verticalUp) {
-            leftSlide.setPower(0.5);
-        }                       //Prob works
-        if (verticalDown) {
-            leftSlide.setPower(-0.5);
-        }
-            if (verticalUp && verticalDown == false) {
-            leftSlide.setPower(0);
-        }
-      */
+
+
             // Arm Movement
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
@@ -174,11 +162,44 @@ public class RobotCentric extends LinearOpMode {
         if (manipulatorGamepad.square) {
             armPose = -72;
         }
+        //Slide Movement
+            if (driveGamepad.dpad_up) {
+                slidePose -= 5;
+            }
+            if (driveGamepad.dpad_down) {
+                slidePose += 5;
+            }
+            if (driveGamepad.dpad_right) {
+                slidePose--;
+            }
+            if (driveGamepad.dpad_left) {
+                slidePose++;
+            }
+            if (slidePose <= -126) {
+                slidePose = -126;
+            }
+            if (slidePose >= -5) {
+                slidePose = -5;
+            }
 
+            if (driveGamepad.cross) {
+                slidePose = -7;
+            }
+            if (driveGamepad.triangle) {
+                slidePose = -126;
+            }
+            if (driveGamepad.square) {
+                slidePose = -72;
+            }
 
         armOne.setTargetPosition(armPose);
+        leftSlide.setTargetPosition(slidePose);
+        rightSlide.setTargetPosition(slidePose);
             
         telemetry.addData("Arm One: ", armOne.getCurrentPosition());
+        telemetry.addData("Left Slide: ", leftSlide.getCurrentPosition());
+        telemetry.addData("Right Slide: ", rightSlide.getCurrentPosition());
+
 
        
        if (clawOpen) {
@@ -200,7 +221,7 @@ public class RobotCentric extends LinearOpMode {
        if (wrist <= 0) {
            wrist = 0;
        }
-       if (manipulatorGamepad.b) {
+       if (manipulatorGamepad.circle) {
            wrist = .4;
        }
        clawRotate.setPosition(wrist);
@@ -219,6 +240,3 @@ public class RobotCentric extends LinearOpMode {
         }
     }
 }
-
-
-
