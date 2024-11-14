@@ -18,6 +18,7 @@ public class FieldCentric extends LinearOpMode {
      // Variables
      public int armPose = 0;
      public double wrist = 4;
+     public int slidePose = 0;
     @Override
     
     //Defines the motor
@@ -34,11 +35,19 @@ public class FieldCentric extends LinearOpMode {
        DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
+       DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+       DcMotor rightSlide = hardwareMap.get(DcMotor.class,"rightSlide");
 
        // Setting arm position
        armOne.setTargetPosition(0);
        armOne.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        armOne.setPower(.65);
+       leftSlide.setTargetPosition(0);
+       leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       rightSlide.setTargetPosition(0);
+       rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       rightSlide.setPower(.65);
+
 
 
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -86,9 +95,6 @@ public class FieldCentric extends LinearOpMode {
             // Linear Slide
             //
              //For up-movement of linear slide
-             boolean verticalUp = manipulatorGamepad.dpad_up;
-             //For down-movement of linear slide
-             boolean verticalDown = manipulatorGamepad.dpad_down;
              double rotateRight = driveGamepad.right_trigger;
              double rotateLeft = driveGamepad.left_trigger;
              double clawPosX = manipulatorGamepad.left_stick_x;
@@ -104,14 +110,14 @@ public class FieldCentric extends LinearOpMode {
              double degreeOff = 0-currentHeading;
              double circleRadii = Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
 
-             double xRot = circleRadii*(Math.cos(0)*Math.cos(degreeOff)-Math.sin(Math.toRadians(90))*Math.sin(degreeOff));
-             double yRot = circleRadii*(Math.sin(Math.toRadians(90))*Math.cos(degreeOff)-Math.cos(Math.toRadians(0))*Math.sin(degreeOff));
+             double xRot = x * Math.cos(degreeOff) - y * Math.sin(degreeOff);
+             double yRot = y * Math.cos(degreeOff) + x * Math.sin(degreeOff);
 
              double combinedRotation = .85*(rotateRight-rotateLeft);
              double fl = (yRot+xRot+combinedRotation);
-             double fr = (xRot-yRot+combinedRotation);
+             double fr = (xRot-yRot-combinedRotation);
              double bl = (yRot-xRot+combinedRotation);
-             double br = (-yRot-xRot+combinedRotation);
+             double br = (-yRot-xRot-combinedRotation);
 
             //stops it from going greater than 1/-1
              double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(combinedRotation),1);
@@ -130,19 +136,8 @@ public class FieldCentric extends LinearOpMode {
                 }
             }
         //temp code
-        
-        /*
-        if (verticalUp) {
-            leftSlide.setPower(0.5);
-        }                       //Prob works
-        if (verticalDown) {
-            leftSlide.setPower(-0.5);
-        }
-            if (verticalUp && verticalDown == false) {
-            leftSlide.setPower(0);
-        }
-        */
 
+        //Arm Pose
             
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
@@ -173,12 +168,47 @@ public class FieldCentric extends LinearOpMode {
         if (manipulatorGamepad.square) {
             armPose = -72;
         }
+            //Slide Movement
+            if (driveGamepad.dpad_up) {
+                slidePose -= 5;
+            }
+            if (driveGamepad.dpad_down) {
+                slidePose += 5;
+            }
+            if (driveGamepad.dpad_right) {
+                slidePose--;
+            }
+            if (driveGamepad.dpad_left) {
+                slidePose++;
+            }
+            if (slidePose <= -126) {
+                slidePose = -126;
+            }
+            if (slidePose >= -5) {
+                slidePose = -5;
+            }
+
+            if (driveGamepad.cross) {
+                slidePose = -7;
+            }
+            if (driveGamepad.triangle) {
+                slidePose = -126;
+            }
+            if (driveGamepad.square) {
+                slidePose = -72;
+            }
+
+            armOne.setTargetPosition(armPose);
+            leftSlide.setTargetPosition(slidePose);
+            rightSlide.setTargetPosition(slidePose);
+
+            telemetry.addData("Arm One: ", armOne.getCurrentPosition());
+            telemetry.addData("Left Slide: ", leftSlide.getCurrentPosition());
+            telemetry.addData("Right Slide: ", rightSlide.getCurrentPosition());
 
 
-        
-        armOne.setTargetPosition(armPose);
-            
-        telemetry.addData("Arm One: ", armOne.getCurrentPosition());
+
+
 
        
        if (clawOpen) {
@@ -200,7 +230,7 @@ public class FieldCentric extends LinearOpMode {
        if (wrist <= 0) {
            wrist = 0;
        }
-       if (manipulatorGamepad.b) {
+       if (manipulatorGamepad.circle) {
            wrist = .4;
        }
        clawRotate.setPosition(wrist);
