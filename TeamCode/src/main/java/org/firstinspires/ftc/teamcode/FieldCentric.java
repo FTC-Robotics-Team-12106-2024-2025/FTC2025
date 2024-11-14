@@ -89,8 +89,8 @@ public class FieldCentric extends LinearOpMode {
              boolean verticalUp = manipulatorGamepad.dpad_up;
              //For down-movement of linear slide
              boolean verticalDown = manipulatorGamepad.dpad_down;
-             double rotateRight = manipulatorGamepad.right_trigger;
-             double rotateLeft = manipulatorGamepad.left_trigger;
+             double rotateRight = driveGamepad.right_trigger;
+             double rotateLeft = driveGamepad.left_trigger;
              double clawPosX = manipulatorGamepad.left_stick_x;
              double clawPosY = -manipulatorGamepad.left_stick_y;
 
@@ -101,18 +101,17 @@ public class FieldCentric extends LinearOpMode {
 
 
              double currentHeading = imu.getAngularOrientation().firstAngle;
-             double headingOff = currentHeading;
-             double degreeOff = currentHeading-headingOff;
+             double degreeOff = 0-currentHeading;
              double circleRadii = Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
 
-             double xRot = circleRadii*(Math.cos(0)*Math.cos(degreeOff)-Math.sin(0)*Math.sin(degreeOff));
-             double yRot = circleRadii*(Math.sin(Math.toRadians(90))*Math.cos(degreeOff)-Math.cos(Math.toRadians(90))*Math.sin(degreeOff));
+             double xRot = circleRadii*(Math.cos(0)*Math.cos(degreeOff)-Math.sin(Math.toRadians(90))*Math.sin(degreeOff));
+             double yRot = circleRadii*(Math.sin(Math.toRadians(90))*Math.cos(degreeOff)-Math.cos(Math.toRadians(0))*Math.sin(degreeOff));
 
              double combinedRotation = .85*(rotateRight-rotateLeft);
              double fl = (yRot+xRot+combinedRotation);
-             double fr = (xRot-yRot-combinedRotation);
+             double fr = (xRot-yRot+combinedRotation);
              double bl = (yRot-xRot+combinedRotation);
-             double br = (-yRot-xRot-combinedRotation);
+             double br = (-yRot-xRot+combinedRotation);
 
             //stops it from going greater than 1/-1
              double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(combinedRotation),1);
@@ -143,7 +142,7 @@ public class FieldCentric extends LinearOpMode {
             leftSlide.setPower(0);
         }
         */
-      
+
             
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
@@ -204,14 +203,12 @@ public class FieldCentric extends LinearOpMode {
            wrist = .4;
        }
        clawRotate.setPosition(wrist);
-       
- 
-         
+
 
         telemetry.update();
     
         
-  
+
 
         
         

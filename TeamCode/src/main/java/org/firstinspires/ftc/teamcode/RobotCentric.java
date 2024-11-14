@@ -94,8 +94,8 @@ public class RobotCentric extends LinearOpMode {
              boolean verticalUp = manipulatorGamepad.dpad_up;
              //For down-movement of linear slide
              boolean verticalDown = manipulatorGamepad.dpad_down;
-             double rotateRight = manipulatorGamepad.right_trigger;
-             double rotateLeft = manipulatorGamepad.left_trigger;
+             double rotateRight = driveGamepad.right_trigger;
+             double rotateLeft = driveGamepad.left_trigger;
              double clawPosX = manipulatorGamepad.left_stick_x;
              double clawPosY = -manipulatorGamepad.left_stick_y;
 
@@ -140,9 +140,13 @@ public class RobotCentric extends LinearOpMode {
             if (verticalUp && verticalDown == false) {
             leftSlide.setPower(0);
         }
-        */
+
+      */
+            // Arm Movement
+        
        
             
+
         if (manipulatorGamepad.dpad_up) {
             armPose -= 5;
         }
@@ -174,7 +178,7 @@ public class RobotCentric extends LinearOpMode {
         }
 
 
-        
+
         armOne.setTargetPosition(armPose);
             
         telemetry.addData("Arm One: ", armOne.getCurrentPosition());
@@ -206,11 +210,14 @@ public class RobotCentric extends LinearOpMode {
        
 
 
-         
-  
-
         telemetry.update();
     
+        
+
+
+
+    
+
 
 
         
