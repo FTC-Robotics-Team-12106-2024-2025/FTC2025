@@ -29,8 +29,7 @@ public class FieldCentric extends LinearOpMode {
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft"); 
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        // Linear Slide
-        //DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide"); //Slot 0
+
         
        DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
@@ -116,8 +115,8 @@ public class FieldCentric extends LinearOpMode {
              double combinedRotation = .85*(rotateRight-rotateLeft);
              double fl = (yRot+xRot+combinedRotation);
              double fr = (xRot-yRot-combinedRotation);
-             double bl = (yRot-xRot+combinedRotation);
-             double br = (-yRot-xRot-combinedRotation);
+             double bl = (yRot-xRot-combinedRotation);
+             double br = (-yRot-xRot+combinedRotation);
 
             //stops it from going greater than 1/-1
              double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(combinedRotation),1);
