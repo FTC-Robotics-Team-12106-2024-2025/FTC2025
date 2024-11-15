@@ -108,8 +108,8 @@ public class RobotCentric extends LinearOpMode {
             double combinedRotation = .85*(rotateRight-rotateLeft);
             double fl = (y+x+combinedRotation);
             double fr = (x-y-combinedRotation);
-            double bl = (y-x+combinedRotation);
-            double br = (-y-x-combinedRotation);
+            double bl = (y-x-combinedRotation);
+            double br = (-y-x+combinedRotation);
 
             //stops it from going greater than 1/-1
             double maxNumber = Math.max(Math.abs(x)+Math.abs(y)+Math.abs(combinedRotation),1);
@@ -198,7 +198,6 @@ public class RobotCentric extends LinearOpMode {
             
         telemetry.addData("Arm One: ", armOne.getCurrentPosition());
         telemetry.addData("Left Slide: ", leftSlide.getCurrentPosition());
-        telemetry.addData("Right Slide: ", rightSlide.getCurrentPosition());
 
 
        

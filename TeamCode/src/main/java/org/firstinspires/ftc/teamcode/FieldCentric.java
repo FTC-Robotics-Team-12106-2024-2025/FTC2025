@@ -94,37 +94,35 @@ public class FieldCentric extends LinearOpMode {
             // Linear Slide
             //
              //For up-movement of linear slide
-             double rotateRight = driveGamepad.right_trigger;
-             double rotateLeft = driveGamepad.left_trigger;
              double clawPosX = manipulatorGamepad.left_stick_x;
              double clawPosY = -manipulatorGamepad.left_stick_y;
-
+             double rx = driveGamepad.right_stick_x;
              boolean clawOpen = manipulatorGamepad.left_bumper;
              boolean clawClose = manipulatorGamepad.right_bumper;
              double wheelCPR = 423.2116; //Counts per revolution
              double linearCPR = 72.1;
 
 
-             double currentHeading = imu.getAngularOrientation().firstAngle;
-             double degreeOff = 0-currentHeading;
+
+             double currentHeading = -imu.getAngularOrientation().firstAngle;
              double circleRadii = Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
 
-             double xRot = x * Math.cos(degreeOff) - y * Math.sin(degreeOff);
-             double yRot = y * Math.cos(degreeOff) + x * Math.sin(degreeOff);
+             double xRot = x * Math.cos(currentHeading) - y * Math.sin(currentHeading);
+             double yRot = y * Math.cos(currentHeading) + x * Math.sin(currentHeading);
 
-             double combinedRotation = .85*(rotateRight-rotateLeft);
-             double fl = (yRot+xRot+combinedRotation);
-             double fr = (xRot-yRot-combinedRotation);
-             double bl = (yRot-xRot-combinedRotation);
-             double br = (-yRot-xRot+combinedRotation);
+
+             double fl = (yRot+xRot+rx);
+             double fr = (xRot-yRot-rx);
+             double bl = (yRot-xRot+rx);
+             double br = (-yRot-xRot-rx);
 
             //stops it from going greater than 1/-1
-             double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(combinedRotation),1);
+             double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(rx),1);
              //powers the motor for wheels
-            frontLeft.setPower(fl/maxNumber*0.5);
-            frontRight.setPower(fr/maxNumber*0.5);
-            backLeft.setPower(bl/maxNumber*0.5);
-            backRight.setPower(br/maxNumber*0.5);
+            frontLeft.setPower(fl/maxNumber);
+            frontRight.setPower(fr/maxNumber);
+            backLeft.setPower(bl/maxNumber);
+            backRight.setPower(br/maxNumber);
 
             if (driveGamepad.guide) {
                 if (!mediaPlayer.isPlaying())
