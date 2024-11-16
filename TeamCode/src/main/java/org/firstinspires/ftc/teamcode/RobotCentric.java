@@ -173,9 +173,10 @@ public class RobotCentric extends LinearOpMode {
 
             armOne.setPower(armPose);
             leftSlide.setPower(slidePose);
-            
-        telemetry.addData("Arm One: ", armOne.getCurrentPosition());
-        telemetry.addData("Left Slide: ", leftSlide.getCurrentPosition());
+
+
+            telemetry.addData("Arm One: ", armPose);
+            telemetry.addData("Left Slide: ", slidePose);
 
 
        
