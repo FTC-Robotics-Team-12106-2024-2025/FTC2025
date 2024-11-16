@@ -130,10 +130,10 @@ public class FieldCentric extends LinearOpMode {
 
             // Arm Movement
             if (manipulatorGamepad.dpad_up) {
-                slidePose = 1;
+                slidePose = 0.85f;
             }
             if (manipulatorGamepad.dpad_down) {
-                slidePose = -1;
+                slidePose = -0.85f;
             }
             if (manipulatorGamepad.dpad_right) {
                 slidePose = -.5f;
@@ -152,10 +152,10 @@ public class FieldCentric extends LinearOpMode {
             }
             //Slide Pose
             if (manipulatorGamepad.cross) {
-                armPose = 1;
+                armPose = 0.85f;
             }
             if (manipulatorGamepad.triangle) {
-                armPose = -1;
+                armPose = -0.85f;
             }
             if (manipulatorGamepad.square) {
                 armPose = 0.5f;
