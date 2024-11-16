@@ -165,6 +165,9 @@ public class RobotCentric extends LinearOpMode {
             if (armPose > 1) {
                 armPose = 1;
             }
+            if (manipulatorGamepad.share) {
+                armPose = 0;
+            }
 
 
 
@@ -198,6 +201,8 @@ public class RobotCentric extends LinearOpMode {
             if (manipulatorGamepad.right_stick_button) {
                 wrist = .4;
             }
+
+
        clawRotate.setPosition(wrist);
        
 

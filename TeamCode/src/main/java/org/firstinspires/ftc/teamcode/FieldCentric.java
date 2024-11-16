@@ -147,6 +147,9 @@ public class FieldCentric extends LinearOpMode {
             if (slidePose > 1) {
                 slidePose = 1;
             }
+            if (manipulatorGamepad.left_stick_button) {
+                slidePose= 0;
+            }
             //Slide Pose
             if (manipulatorGamepad.cross) {
                 armPose = 1;
@@ -204,6 +207,7 @@ public class FieldCentric extends LinearOpMode {
        if (manipulatorGamepad.right_stick_button) {
            wrist = .4;
        }
+
        clawRotate.setPosition(wrist);
 
 
