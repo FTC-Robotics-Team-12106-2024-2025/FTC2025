@@ -35,15 +35,12 @@ public class FieldCentric extends LinearOpMode {
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
        DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-       DcMotor rightSlide = hardwareMap.get(DcMotor.class,"rightSlide");
 
        // Setting arm position
 
        leftSlide.setTargetPosition(0);
        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       rightSlide.setTargetPosition(0);
-       rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       rightSlide.setPower(.65);
+       leftSlide.setPower(.65);
 
 
 
@@ -135,16 +132,16 @@ public class FieldCentric extends LinearOpMode {
         //Arm Pose
             
         if (manipulatorGamepad.dpad_up) {
-            armPose = (float) (armPose +.05);
+            armPose = (float) (armPose +.1);
         }
         if (manipulatorGamepad.dpad_down) {
-            armPose = (float) (armPose -.05);
+            armPose = (float) (armPose -.1);
         }
         if (manipulatorGamepad.dpad_right) {
-            armPose = (float) (armPose -.01);
+            armPose = (float) (armPose -.05);
         }
         if (manipulatorGamepad.dpad_left) {
-            armPose = (float) (armPose +.01);
+            armPose = (float) (armPose +.05);
         }
         if (armPose < -1) {
             armPose = -1;
@@ -152,6 +149,18 @@ public class FieldCentric extends LinearOpMode {
         if (armPose > 1) {
             armPose = 1;
         }
+            if (manipulatorGamepad.cross) {
+                armPose = 1;
+            }
+            if (manipulatorGamepad.triangle) {
+                armPose = -1;
+            }
+            if (manipulatorGamepad.square) {
+                armPose = 0.5F;
+            }
+            if (manipulatorGamepad.circle) {
+                armPose = -0.5F;
+            }
         
         
 
@@ -186,11 +195,10 @@ public class FieldCentric extends LinearOpMode {
             }
 
             leftSlide.setTargetPosition(slidePose);
-            rightSlide.setTargetPosition(slidePose);
 
             telemetry.addData("Arm One: ", armOne.getCurrentPosition());
             telemetry.addData("Left Slide: ", leftSlide.getCurrentPosition());
-            telemetry.addData("Right Slide: ", rightSlide.getCurrentPosition());
+
 
 
 
@@ -216,7 +224,7 @@ public class FieldCentric extends LinearOpMode {
        if (wrist <= 0) {
            wrist = 0;
        }
-       if (manipulatorGamepad.circle) {
+       if (manipulatorGamepad.right_stick_button) {
            wrist = .4;
        }
        clawRotate.setPosition(wrist);

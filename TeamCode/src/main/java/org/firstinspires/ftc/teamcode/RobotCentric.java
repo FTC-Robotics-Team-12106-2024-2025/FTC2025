@@ -40,9 +40,7 @@ public class RobotCentric extends LinearOpMode {
 
        leftSlide.setTargetPosition(0);
        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       rightSlide.setTargetPosition(0);
-       rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       rightSlide.setPower(.65);
+
 
 
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -131,16 +129,16 @@ public class RobotCentric extends LinearOpMode {
 
             // Arm Movement
             if (manipulatorGamepad.dpad_up) {
-                armPose = (float) (armPose +.05);
+                armPose = (float) (armPose +.1);
             }
             if (manipulatorGamepad.dpad_down) {
-                armPose = (float) (armPose -.05);
+                armPose = (float) (armPose -.1);
             }
             if (manipulatorGamepad.dpad_right) {
-                armPose = (float) (armPose -.01);
+                armPose = (float) (armPose -.05);
             }
             if (manipulatorGamepad.dpad_left) {
-                armPose = (float) (armPose +.01);
+                armPose = (float) (armPose +.05);
             }
             if (armPose < -1) {
                 armPose = -1;
@@ -193,7 +191,6 @@ public class RobotCentric extends LinearOpMode {
             }
 
         leftSlide.setTargetPosition(slidePose);
-        rightSlide.setTargetPosition(slidePose);
             
         telemetry.addData("Arm One: ", armOne.getCurrentPosition());
         telemetry.addData("Left Slide: ", leftSlide.getCurrentPosition());
@@ -219,9 +216,9 @@ public class RobotCentric extends LinearOpMode {
        if (wrist <= 0) {
            wrist = 0;
        }
-       if (manipulatorGamepad.circle) {
-           wrist = .4;
-       }
+            if (manipulatorGamepad.right_stick_button) {
+                wrist = .4;
+            }
        clawRotate.setPosition(wrist);
        
 
