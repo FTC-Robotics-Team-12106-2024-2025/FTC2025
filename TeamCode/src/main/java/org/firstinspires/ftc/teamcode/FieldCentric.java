@@ -89,14 +89,16 @@ public class FieldCentric extends LinearOpMode {
              }
 
              boolean honk = driveGamepad.left_stick_button;
-
+            double rotateRight = driveGamepad.right_trigger;
+            double rotateLeft = driveGamepad.left_trigger;
              //
             // Linear Slide
             //
              //For up-movement of linear slide
              double clawPosX = manipulatorGamepad.left_stick_x;
              double clawPosY = -manipulatorGamepad.left_stick_y;
-             double rx = driveGamepad.right_stick_x;
+             //double rx = driveGamepad.right_stick_x;
+            double rx = rotateRight-rotateLeft;
              boolean clawOpen = manipulatorGamepad.left_bumper;
              boolean clawClose = manipulatorGamepad.right_bumper;
              double wheelCPR = 423.2116; //Counts per revolution

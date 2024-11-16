@@ -91,13 +91,15 @@ public class RobotCentric extends LinearOpMode {
              if (driveGamepad.dpad_down) {
                  y = -0.25f;
              }
+            double rotateRight = driveGamepad.right_trigger;
+            double rotateLeft = driveGamepad.left_trigger;
 
              //
             // Linear Slide
             //
              //For up-movement of linear slide
-
-            double rx = driveGamepad.right_stick_x;
+            double rx = rotateRight - rotateLeft;
+            //double rx = driveGamepad.right_stick_x;
              boolean clawOpen = manipulatorGamepad.left_bumper;
              boolean clawClose = manipulatorGamepad.right_bumper;
 
