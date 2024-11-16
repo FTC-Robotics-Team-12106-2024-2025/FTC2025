@@ -18,7 +18,7 @@ public class FieldCentric extends LinearOpMode {
      // Variables
      public float armPower = 0;
      public double wrist = 4;
-     public float slidePower = 0;
+     public int slidePose = 0;
     @Override
     
     //Defines the motor
@@ -37,6 +37,9 @@ public class FieldCentric extends LinearOpMode {
        DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
 
        // Setting arm position
+        leftSlide.setTargetPosition(0);
+        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftSlide.setPower(0.65);
 
 
 
@@ -129,16 +132,28 @@ public class FieldCentric extends LinearOpMode {
         //Arm Pose
 
             // Arm Movement
-            slidePower = 0;
-            if (manipulatorGamepad.dpad_right) {
-                slidePower = -.5f;
-            }
+            slidePose = 0;
             if (manipulatorGamepad.dpad_left) {
-                slidePower = .5f;
+                slidePose -= 5;
+            }
+            if (manipulatorGamepad.dpad_right) {
+                slidePose += 5;
+            }
+            if (manipulatorGamepad.dpad_up) {
+                slidePose--;
+            }
+            if (manipulatorGamepad.dpad_up) {
+                slidePose++;
+            }
+            if (slidePose <= -126) {
+                slidePose = -126;
+            }
+            if (slidePose >= -5) {
+                slidePose = -5;
             }
 
             if (manipulatorGamepad.left_stick_button) {
-                slidePower= 0;
+                slidePose= -126;
             }
             //Slide Pose
             armPower = 0;
@@ -148,16 +163,22 @@ public class FieldCentric extends LinearOpMode {
             if (manipulatorGamepad.circle) {
                 armPower = -0.5f;
             }
+            if (manipulatorGamepad.cross) {
+                slidePose = -72;
+            }
+            if (manipulatorGamepad.triangle) {
+                slidePose = -7;
+            }
 
 
 
 
             armOne.setPower(armPower);
-            leftSlide.setPower(slidePower);
+            leftSlide.setTargetPosition(slidePose);
 
 
             telemetry.addData("Arm One: ", armPower);
-            telemetry.addData("Left Slide: ", slidePower);
+            telemetry.addData("Left Slide: ", slidePose);
 
 
 
