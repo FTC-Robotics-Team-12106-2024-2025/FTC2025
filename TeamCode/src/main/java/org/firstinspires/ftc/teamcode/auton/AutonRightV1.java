@@ -18,35 +18,6 @@ public class AutonRightV1 extends LinearOpMode {
          double fr = (x-y);
          double bl = (y-x);
          double br = (-y-x);
-        double wheelCPR = 423.2116; //Counts per revolution
-         int Flposition = frontLeft.getCurrentPosition();
-         int Frposition = frontRight.getCurrentPosition();
-         int Blposition = backLeft.getCurrentPosition();
-         int Brposition = backRight.getCurrentPosition();
-         //YAY MORE VARIABLES
-         double Flrevolutions = Flposition/wheelCPR;
-         double Frrevolutions = Frposition/wheelCPR;
-         double Blrevolutions = Blposition/wheelCPR;
-         double Brrevolutions = Brposition/wheelCPR;
-        double leadMotor = Math.min(Math.min(Flrevolutions,Frrevolutions),Math.min(Blrevolutions,Brrevolutions));
-         //Modifier Variables YAY
-        // double linearMotor = Math.min(Lsposition,Rsposition);
-         double flModifier = 1;
-         double frModifier = 1;
-         double blModifier = 1;
-         double brModifier = 1;
-            if (Flrevolutions > leadMotor) {
-                flModifier = leadMotor/Flrevolutions;
-            }
-            if (Frrevolutions > leadMotor) {
-                frModifier = leadMotor/Frrevolutions;
-            }
-            if (Blrevolutions > leadMotor) {
-                blModifier = leadMotor/Blrevolutions;
-            }
-            if (Brrevolutions > leadMotor) {
-                brModifier = leadMotor/Brrevolutions;
-            }
         //stops it from going greater than 1/-1
          double maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
          //powers the motor for wheels
@@ -62,35 +33,7 @@ public class AutonRightV1 extends LinearOpMode {
     }
    public void turn(boolean rotateLeft, boolean rotateRight) {
         double fl, fr, bl, br;
-        double wheelCPR = 423.2116; //Counts per revolution
-         int Flposition = frontLeft.getCurrentPosition();
-         int Frposition = frontRight.getCurrentPosition();
-         int Blposition = backLeft.getCurrentPosition();
-         int Brposition = backRight.getCurrentPosition();
-         //YAY MORE VARIABLES
-         double Flrevolutions = Flposition/wheelCPR;
-         double Frrevolutions = Frposition/wheelCPR;
-         double Blrevolutions = Blposition/wheelCPR;
-         double Brrevolutions = Brposition/wheelCPR;
-        double leadMotor = Math.min(Math.min(Flrevolutions,Frrevolutions),Math.min(Blrevolutions,Brrevolutions));
-         //Modifier Variables YAY
-        // double linearMotor = Math.min(Lsposition,Rsposition);
-         double flModifier = 1;
-         double frModifier = 1;
-         double blModifier = 1;
-         double brModifier = 1;
-            if (Flrevolutions > leadMotor) {
-                flModifier = leadMotor/Flrevolutions;
-            }
-            if (Frrevolutions > leadMotor) {
-                frModifier = leadMotor/Frrevolutions;
-            }
-            if (Blrevolutions > leadMotor) {
-                blModifier = leadMotor/Blrevolutions;
-            }
-            if (Brrevolutions > leadMotor) {
-                brModifier = leadMotor/Brrevolutions;
-            }
+
         fl = fr = bl = br = 0;
         if (rotateRight) {
             fl = 0.5;
