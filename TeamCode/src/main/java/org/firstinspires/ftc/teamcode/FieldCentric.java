@@ -112,17 +112,17 @@ public class FieldCentric extends LinearOpMode {
 
 
              double fl = (yRot+xRot+rx);
-             double fr = (xRot-yRot-rx);
+             double fr = (xRot-yRot+rx);
              double bl = (yRot-xRot+rx);
-             double br = (-yRot-xRot-rx);
+             double br = (-yRot-xRot+rx);
 
             //stops it from going greater than 1/-1
              double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(rx),1);
              //powers the motor for wheels
-            frontLeft.setPower(fl/maxNumber);
-            frontRight.setPower(fr/maxNumber);
-            backLeft.setPower(bl/maxNumber);
-            backRight.setPower(br/maxNumber);
+            frontLeft.setPower(fl/maxNumber*.85);
+            frontRight.setPower(fr/maxNumber*.85);
+            backLeft.setPower(bl/maxNumber*.85);
+            backRight.setPower(br/maxNumber*.85);
 
             if (driveGamepad.guide) {
                 if (!mediaPlayer.isPlaying())

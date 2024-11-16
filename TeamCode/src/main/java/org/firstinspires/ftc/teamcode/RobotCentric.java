@@ -105,9 +105,9 @@ public class RobotCentric extends LinearOpMode {
 
 
             double fl = (y+x+rx);
-            double fr = (x-y-rx);
+            double fr = (x-y+rx);
             double bl = (y-x+rx);
-            double br = (-y-x-rx);
+            double br = (-y-x+rx);
 
             //stops it from going greater than 1/-1
             double maxNumber = Math.max(Math.abs(x)+Math.abs(y)+Math.abs(rx),1);
