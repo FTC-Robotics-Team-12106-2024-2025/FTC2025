@@ -96,23 +96,21 @@ public class RobotCentric extends LinearOpMode {
             // Linear Slide
             //
              //For up-movement of linear slide
-             double rotateRight = driveGamepad.right_trigger;
-             double rotateLeft = driveGamepad.left_trigger;
 
+            double rx = driveGamepad.right_stick_x;
              boolean clawOpen = manipulatorGamepad.left_bumper;
              boolean clawClose = manipulatorGamepad.right_bumper;
 
 
 
 
-            double combinedRotation = .85*(rotateRight-rotateLeft);
-            double fl = (y+x+combinedRotation);
-            double fr = (x-y-combinedRotation);
-            double bl = (y-x-combinedRotation);
-            double br = (-y-x+combinedRotation);
+            double fl = (y+x+rx);
+            double fr = (x-y-rx);
+            double bl = (y-x+rx);
+            double br = (-y-x-rx);
 
             //stops it from going greater than 1/-1
-            double maxNumber = Math.max(Math.abs(x)+Math.abs(y)+Math.abs(combinedRotation),1);
+            double maxNumber = Math.max(Math.abs(x)+Math.abs(y)+Math.abs(rx),1);
              //powers the motor for wheels
             frontLeft.setPower(fl/maxNumber*0.5);
             frontRight.setPower(fr/maxNumber*0.5);
@@ -163,16 +161,16 @@ public class RobotCentric extends LinearOpMode {
             armPose = -72;
         }
         //Slide Movement
-            if (driveGamepad.dpad_up) {
+            if (manipulatorGamepad.right_stick_y < 0) {
                 slidePose -= 5;
             }
-            if (driveGamepad.dpad_down) {
+            if (manipulatorGamepad.right_stick_y > 0) {
                 slidePose += 5;
             }
-            if (driveGamepad.dpad_right) {
+            if (manipulatorGamepad.right_stick_x > 0) {
                 slidePose--;
             }
-            if (driveGamepad.dpad_left) {
+            if (manipulatorGamepad.right_stick_x < 0) {
                 slidePose++;
             }
             if (slidePose <= -126) {

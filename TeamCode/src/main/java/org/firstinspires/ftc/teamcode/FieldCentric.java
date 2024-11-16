@@ -166,16 +166,16 @@ public class FieldCentric extends LinearOpMode {
             armPose = -72;
         }
             //Slide Movement
-            if (driveGamepad.dpad_up) {
+            if (manipulatorGamepad.right_stick_y < 0) {
                 slidePose -= 5;
             }
-            if (driveGamepad.dpad_down) {
+            if (manipulatorGamepad.right_stick_y > 0) {
                 slidePose += 5;
             }
-            if (driveGamepad.dpad_right) {
+            if (manipulatorGamepad.right_stick_x > 0) {
                 slidePose--;
             }
-            if (driveGamepad.dpad_left) {
+            if (manipulatorGamepad.right_stick_x < 0) {
                 slidePose++;
             }
             if (slidePose <= -126) {
