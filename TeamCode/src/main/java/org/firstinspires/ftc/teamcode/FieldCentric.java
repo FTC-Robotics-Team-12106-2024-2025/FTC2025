@@ -18,7 +18,7 @@ public class FieldCentric extends LinearOpMode {
      // Variables
      public float armPose = 0;
      public double wrist = 4;
-     public int slidePose = 0;
+     public float slidePose = 0;
     @Override
     
     //Defines the motor
@@ -38,9 +38,6 @@ public class FieldCentric extends LinearOpMode {
 
        // Setting arm position
 
-       leftSlide.setTargetPosition(0);
-       leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       leftSlide.setPower(.65);
 
 
 
@@ -130,25 +127,27 @@ public class FieldCentric extends LinearOpMode {
         //temp code
 
         //Arm Pose
-            
-        if (manipulatorGamepad.dpad_up) {
-            armPose = (float) (armPose +.1);
-        }
-        if (manipulatorGamepad.dpad_down) {
-            armPose = (float) (armPose -.1);
-        }
-        if (manipulatorGamepad.dpad_right) {
-            armPose = (float) (armPose -.05);
-        }
-        if (manipulatorGamepad.dpad_left) {
-            armPose = (float) (armPose +.05);
-        }
-        if (armPose < -1) {
-            armPose = -1;
-        }
-        if (armPose > 1) {
-            armPose = 1;
-        }
+
+            // Arm Movement
+            if (manipulatorGamepad.dpad_up) {
+                slidePose = 1;
+            }
+            if (manipulatorGamepad.dpad_down) {
+                slidePose = -1;
+            }
+            if (manipulatorGamepad.dpad_right) {
+                slidePose = -.5f;
+            }
+            if (manipulatorGamepad.dpad_left) {
+                slidePose = .5f;
+            }
+            if (slidePose < -1) {
+                slidePose = -1;
+            }
+            if (slidePose > 1) {
+                slidePose = 1;
+            }
+            //Slide Pose
             if (manipulatorGamepad.cross) {
                 armPose = 1;
             }
@@ -156,45 +155,23 @@ public class FieldCentric extends LinearOpMode {
                 armPose = -1;
             }
             if (manipulatorGamepad.square) {
-                armPose = 0.5F;
+                armPose = 0.5f;
             }
             if (manipulatorGamepad.circle) {
-                armPose = -0.5F;
+                armPose = -0.5f;
             }
-        
-        
-
-            //Slide Movement
-            if (manipulatorGamepad.right_stick_y < 0) {
-                slidePose -= 5;
+            if (armPose < -1) {
+                armPose = -1;
             }
-            if (manipulatorGamepad.right_stick_y > 0) {
-                slidePose += 5;
-            }
-            if (manipulatorGamepad.right_stick_x > 0) {
-                slidePose--;
-            }
-            if (manipulatorGamepad.right_stick_x < 0) {
-                slidePose++;
-            }
-            if (slidePose <= -126) {
-                slidePose = -126;
-            }
-            if (slidePose >= -5) {
-                slidePose = -5;
+            if (armPose > 1) {
+                armPose = 1;
             }
 
-            if (driveGamepad.cross) {
-                slidePose = -7;
-            }
-            if (driveGamepad.triangle) {
-                slidePose = -126;
-            }
-            if (driveGamepad.square) {
-                slidePose = -72;
-            }
 
-            leftSlide.setTargetPosition(slidePose);
+
+            armOne.setPower(armPose);
+            leftSlide.setPower(slidePose);
+
 
             telemetry.addData("Arm One: ", armOne.getCurrentPosition());
             telemetry.addData("Left Slide: ", leftSlide.getCurrentPosition());
