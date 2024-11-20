@@ -16,8 +16,8 @@ public class FieldCentric extends LinearOpMode {
      Gamepad manipulatorGamepad = new Gamepad();
 
      // Variables
-     public float armPower = 0;
      public double wrist = 4;
+     public int armPose = 0;
      public int slidePose = 0;
     @Override
     
@@ -26,24 +26,25 @@ public class FieldCentric extends LinearOpMode {
         // Drive Motors
         DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft"); //Port 0
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight"); //Port 1
-        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft"); 
+        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
 
 
-        
-       DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
-       Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
-       Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
-       DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        DcMotor arm = hardwareMap.get(DcMotor.class,"armOne");
+        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
+        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
+        DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
 
-       // Setting arm position
+        // Setting Positions
         leftSlide.setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftSlide.setPower(0.65);
 
+        arm.setTargetPosition(0);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(0.65);
 
-
-
+        // Gyroscope
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -67,57 +68,102 @@ public class FieldCentric extends LinearOpMode {
             //
             // Drive
             //
+            double wheelCPR = 423.2116; //Counts per revolution
+            double linearCPR = 72.1;
             float y = -driveGamepad.left_stick_y;
             float x = driveGamepad.left_stick_x;
          
-             if (driveGamepad.dpad_left) {
+            if (driveGamepad.dpad_left) {
                  x = -0.25f;
-             }
-             if (driveGamepad.dpad_right) {
+            }
+            if (driveGamepad.dpad_right) {
                  x = 0.25f;
-             }
-             if (driveGamepad.dpad_up) {
-                 y = 0.25f;
-             }
-             if (driveGamepad.dpad_down) {
+            }
+            if (driveGamepad.dpad_up) {
+                y = 0.25f;
+            }
+            if (driveGamepad.dpad_down) {
                  y = -0.25f;
-             }
+            }
 
-             boolean honk = driveGamepad.left_stick_button;
+            double currentHeading = -imu.getAngularOrientation().firstAngle;
+//            boolean honk = driveGamepad.left_stick_button;
             double rotateRight = driveGamepad.right_trigger;
             double rotateLeft = driveGamepad.left_trigger;
-             //
-            // Linear Slide
-            //
-             //For up-movement of linear slide
-             double clawPosX = manipulatorGamepad.left_stick_x;
-             double clawPosY = -manipulatorGamepad.left_stick_y;
             double rx = rotateRight-rotateLeft;
-             boolean clawOpen = manipulatorGamepad.left_bumper;
-             boolean clawClose = manipulatorGamepad.right_bumper;
-             double wheelCPR = 423.2116; //Counts per revolution
-             double linearCPR = 72.1;
+            double xRot = x * Math.cos(currentHeading) - y * Math.sin(currentHeading);
+            double yRot = y * Math.cos(currentHeading) + x * Math.sin(currentHeading);
 
-
-
-             double currentHeading = -imu.getAngularOrientation().firstAngle;
-
-             double xRot = x * Math.cos(currentHeading) - y * Math.sin(currentHeading);
-             double yRot = y * Math.cos(currentHeading) + x * Math.sin(currentHeading);
-
-
-             double fl = (yRot+xRot+rx);
-             double fr = (xRot-yRot+rx);
-             double bl = (yRot-xRot+rx);
-             double br = (-yRot-xRot+rx);
+            // Motor powers
+            double fl = (yRot+xRot+rx);
+            double fr = (xRot-yRot+rx);
+            double bl = (yRot-xRot+rx);
+            double br = (-yRot-xRot+rx);
 
             //stops it from going greater than 1/-1
-             double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(rx),1);
-             //powers the motor for wheels
-            frontLeft.setPower(fl/maxNumber*.85);
-            frontRight.setPower(fr/maxNumber*.85);
-            backLeft.setPower(bl/maxNumber*.85);
-            backRight.setPower(br/maxNumber*.85);
+            double maxNumber = Math.max(Math.abs(xRot)+Math.abs(yRot)+Math.abs(rx),1);
+
+            //powers the motor for wheels
+            frontLeft.setPower(fl / maxNumber * .85);
+            frontRight.setPower(fr / maxNumber * .85);
+            backLeft.setPower(bl / maxNumber * .85);
+            backRight.setPower(br / maxNumber * .85);
+
+            //
+            // Arm Angle
+            //
+            armPose += (-manipulatorGamepad.right_stick_y * 5);
+            if (manipulatorGamepad.dpad_up) {
+                armPose--;
+            }
+            if (manipulatorGamepad.dpad_down) {
+                armPose++;
+            }
+            arm.setTargetPosition(armPose);
+
+//            if (armPose <= -126) {
+//                armPose = -126;
+//            }
+//            if (armPose >= -5) {
+//                armPose = -5;
+//            }
+            telemetry.addData("Arm Pose: ", armPose);
+
+            //
+            // Linear Slide
+            //
+            slidePose += (-manipulatorGamepad.left_stick_y * 10);
+//            if (manipulatorGamepad.dpad_up) {
+//                slidePose++;
+//            }
+//            if (manipulatorGamepad.dpad_down) {
+//                slidePose--;
+//            }
+
+            // Limits
+            if (slidePose < 0) {
+                slidePose = 0;
+            }
+            if (slidePose > 6510) {
+                slidePose = 6510;
+            }
+            leftSlide.setTargetPosition(slidePose);
+
+            //
+            // Claw
+            //
+            //For up-movement of linear slide
+            double clawPosX = manipulatorGamepad.left_stick_x;
+//            double clawPosY = -manipulatorGamepad.left_stick_y;
+
+            if (manipulatorGamepad.left_bumper) {
+                clawClamp.setPosition(1);
+            }
+            if (manipulatorGamepad.right_bumper) {
+                clawClamp.setPosition(0);
+            }
+            telemetry.addData("Claw Position", clawClamp.getPosition());
+
 
             if (driveGamepad.guide) {
                 if (!mediaPlayer.isPlaying())
@@ -127,105 +173,24 @@ public class FieldCentric extends LinearOpMode {
                     mediaPlayer.seekTo(0);
                 }
             }
-        //temp code
-
-        //Arm Pose
-
-            // Arm Movement
-            slidePose = 0;
-            if (manipulatorGamepad.dpad_left) {
-                slidePose -= 5;
+            if (manipulatorGamepad.left_trigger >= .9) {
+                wrist -= .05;
             }
-            if (manipulatorGamepad.dpad_right) {
-                slidePose += 5;
-            }
-            if (manipulatorGamepad.dpad_up) {
-                slidePose--;
-            }
-            if (manipulatorGamepad.dpad_up) {
-                slidePose++;
-            }
-            if (slidePose <= -126) {
-                slidePose = -126;
-            }
-            if (slidePose >= -5) {
-                slidePose = -5;
-            }
+           if (manipulatorGamepad.right_trigger >= .9) {
+               wrist += .05;
+           }
+           if (wrist >= 1) {
+               wrist = 1;
+           }
+           if (wrist <= 0) {
+               wrist = 0;
+           }
+           if (manipulatorGamepad.right_stick_button) {
+               wrist = .4;
+           }
+           clawRotate.setPosition(wrist);
 
-            if (manipulatorGamepad.left_stick_button) {
-                slidePose= -126;
-            }
-            //Slide Pose
-            armPower = 0;
-            if (manipulatorGamepad.square) {
-                armPower = 0.5f;
-            }
-            if (manipulatorGamepad.circle) {
-                armPower = -0.5f;
-            }
-            if (manipulatorGamepad.cross) {
-                slidePose = -72;
-            }
-            if (manipulatorGamepad.triangle) {
-                slidePose = -7;
-            }
-
-
-
-
-            armOne.setPower(armPower);
-            leftSlide.setTargetPosition(slidePose);
-
-
-            telemetry.addData("Arm One: ", armPower);
-            telemetry.addData("Left Slide: ", slidePose);
-
-
-
-
-
-
-       
-       if (clawOpen) {
-           clawClamp.setPosition(1);
-       }
-       if (clawClose) {
-           clawClamp.setPosition(0);
-       }
-       
-       if (manipulatorGamepad.left_trigger >= .9) {
-           wrist -= .05;
-       }
-       if (manipulatorGamepad.right_trigger >= .9) {
-           wrist += .05;
-       }
-       if (wrist >= 1) {
-           wrist = 1;
-       }
-       if (wrist <= 0) {
-           wrist = 0;
-       }
-       if (manipulatorGamepad.right_stick_button) {
-           wrist = .4;
-       }
-
-       clawRotate.setPosition(wrist);
-
-
-         
-  
-
-        telemetry.update();
-    
-        
-
-
-        
-        
-        
-        
-        
-        
+           telemetry.update();
         }
     }
 }
