@@ -13,7 +13,7 @@ public class AutonRightV1 extends LinearOpMode {
     public DcMotor leftSlide = null;
     public DcMotor rightSlide = null;
     public DcMotor Arm = null;
-        public void moveWheel(double x,double y) {
+    public void moveWheel(double x,double y) {
          double fl = (y+x);
          double fr = (x-y);
          double bl = (y-x);

@@ -17,7 +17,7 @@ public class RobotCentric extends LinearOpMode {
      Gamepad manipulatorGamepad = new Gamepad();
 
      // Variables
-     public float armPose = 0;
+     public float armPower = 0;
      public double wrist = 4;
      public float slidePose = 0;
     @Override
@@ -40,6 +40,7 @@ public class RobotCentric extends LinearOpMode {
 
        leftSlide.setTargetPosition(0);
        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftSlide.setPower(0.65);
 
 
 
@@ -128,51 +129,51 @@ public class RobotCentric extends LinearOpMode {
 
 
             // Arm Movement
-            if (manipulatorGamepad.dpad_up) {
-                slidePose = 1;
-            }
-            if (manipulatorGamepad.dpad_down) {
-                slidePose = -1;
+            if (manipulatorGamepad.dpad_left) {
+                slidePose -= 5;
             }
             if (manipulatorGamepad.dpad_right) {
-                slidePose = -.5f;
+                slidePose += 5;
             }
-            if (manipulatorGamepad.dpad_left) {
-                slidePose = .5f;
+            if (manipulatorGamepad.dpad_up) {
+                slidePose--;
             }
-            if (slidePose < -1) {
-                slidePose = -1;
+            if (manipulatorGamepad.dpad_up) {
+                slidePose++;
             }
-            if (slidePose > 1) {
-                slidePose = 1;
+            if (slidePose <= -126) {
+                slidePose = -126;
             }
+            if (slidePose >= -5) {
+                slidePose = -5;
+            }
+
             //Slide Pose
-            if (manipulatorGamepad.cross) {
-                armPose = 1;
-            }
-            if (manipulatorGamepad.triangle) {
-                armPose = -1;
-            }
+
             if (manipulatorGamepad.square) {
-                armPose = 0.5f;
+                armPower = 0.5f;
             }
             if (manipulatorGamepad.circle) {
-                armPose = -0.5f;
+                armPower = -0.5f;
             }
-            if (armPose < -1) {
-                armPose = -1;
+            if (manipulatorGamepad.cross) {
+                slidePose = -72;
             }
-            if (armPose > 1) {
-                armPose = 1;
+            if (manipulatorGamepad.triangle) {
+                slidePose = -7;
+            }
+            if (manipulatorGamepad.share) {
+                armPower = 0;
             }
 
 
 
-            armOne.setPower(armPose);
+            armOne.setPower(armPower);
             leftSlide.setPower(slidePose);
-            
-        telemetry.addData("Arm One: ", armOne.getCurrentPosition());
-        telemetry.addData("Left Slide: ", leftSlide.getCurrentPosition());
+
+
+            telemetry.addData("Arm One: ", armPower);
+            telemetry.addData("Left Slide: ", slidePose);
 
 
        
@@ -198,6 +199,8 @@ public class RobotCentric extends LinearOpMode {
             if (manipulatorGamepad.right_stick_button) {
                 wrist = .4;
             }
+
+
        clawRotate.setPosition(wrist);
        
 
