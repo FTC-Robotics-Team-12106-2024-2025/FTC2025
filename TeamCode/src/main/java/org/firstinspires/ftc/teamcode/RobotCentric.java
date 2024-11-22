@@ -20,6 +20,8 @@ public class RobotCentric extends LinearOpMode {
      public int armPose = 0;
      public double wrist = 4;
      public int slidePose = 0;
+    public double extenderPose = 0;
+    public int extenderTwo = 0;
     @Override
     
     //Defines the motor
@@ -31,9 +33,11 @@ public class RobotCentric extends LinearOpMode {
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
         DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
         
-       DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
+       DcMotor arm = hardwareMap.get(DcMotor.class,"arm");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
+        Servo Extendo = hardwareMap.get(Servo.class,"Extendo");
+        //DcMotor Extendo = hardwareMap.get(DcMotor.class,"Extendo")
 
        // Setting arm position
 
@@ -41,6 +45,15 @@ public class RobotCentric extends LinearOpMode {
        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftSlide.setPower(0.65);
 
+        arm.setTargetPosition(0);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(0.65);
+
+        /*
+        Extendo.setTargetPosition(0);
+        Extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Extendo.setPower(0.65);
+         */
 
 
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -124,7 +137,28 @@ public class RobotCentric extends LinearOpMode {
             }
         
         //temp code
-        
+
+            //
+            //Extender
+            //
+            extenderPose += (manipulatorGamepad.left_stick_x);
+
+            //extenderTwo += (manipulatorGamepad.left_stick_x);
+            if (manipulatorGamepad.dpad_up) {
+                extenderTwo--;
+                extenderPose -= 0.01F;
+            }
+            if (manipulatorGamepad.dpad_down) {
+                extenderTwo++;
+                extenderPose += 0.01F;
+            }
+            telemetry.addData("Extender Pose for Servo: ", extenderPose);
+            telemetry.addData("Extender Pose for Motor", extenderTwo);
+            if (extenderPose < 0) {
+                extenderPose = 0;
+            }
+            Extendo.setPosition(extenderPose);
+            //Extendo.setPosition(extenderTwo);
 
 
             // Arm Movement
@@ -149,7 +183,7 @@ public class RobotCentric extends LinearOpMode {
             if (armPose > 1833) {
                 armPose = 1833;
             }
-            armOne.setTargetPosition(armPose);
+            arm.setTargetPosition(armPose);
 
 
 
@@ -180,7 +214,7 @@ public class RobotCentric extends LinearOpMode {
        if (wrist <= 0) {
            wrist = 0;
        }
-            if (manipulatorGamepad.right_stick_button) {
+            if (manipulatorGamepad.options) {
                 wrist = .4;
             }
 
