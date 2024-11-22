@@ -128,7 +128,7 @@ public class FieldCentric extends LinearOpMode {
             //
             // Linear Slide
             //
-            slidePose += (-manipulatorGamepad.left_stick_y * 10);
+            slidePose += (-manipulatorGamepad.left_stick_y * 15);
 
 
             // Limits
