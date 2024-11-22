@@ -113,32 +113,23 @@ public class FieldCentric extends LinearOpMode {
             // Arm Angle
             //
             armPose += (-manipulatorGamepad.right_stick_y * 5);
-            if (manipulatorGamepad.dpad_up) {
-                armPose--;
+
+            if (armPose < 0) {
+                armPose = 0;
             }
-            if (manipulatorGamepad.dpad_down) {
-                armPose++;
+            if (armPose > 1833) {
+                armPose = 1833;
             }
             arm.setTargetPosition(armPose);
 
-//            if (armPose <= -126) {
-//                armPose = -126;
-//            }
-//            if (armPose >= -5) {
-//                armPose = -5;
-//            }
+
             telemetry.addData("Arm Pose: ", armPose);
 
             //
             // Linear Slide
             //
             slidePose += (-manipulatorGamepad.left_stick_y * 10);
-//            if (manipulatorGamepad.dpad_up) {
-//                slidePose++;
-//            }
-//            if (manipulatorGamepad.dpad_down) {
-//                slidePose--;
-//            }
+
 
             // Limits
             if (slidePose < 0) {
@@ -153,8 +144,7 @@ public class FieldCentric extends LinearOpMode {
             // Claw
             //
             //For up-movement of linear slide
-            double clawPosX = manipulatorGamepad.left_stick_x;
-//            double clawPosY = -manipulatorGamepad.left_stick_y;
+
 
             if (manipulatorGamepad.left_bumper) {
                 clawClamp.setPosition(1);

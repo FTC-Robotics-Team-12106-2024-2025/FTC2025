@@ -17,9 +17,9 @@ public class RobotCentric extends LinearOpMode {
      Gamepad manipulatorGamepad = new Gamepad();
 
      // Variables
-     public float armPower = 0;
+     public int armPose = 0;
      public double wrist = 4;
-     public float slidePose = 0;
+     public int slidePose = 0;
     @Override
     
     //Defines the motor
@@ -30,7 +30,6 @@ public class RobotCentric extends LinearOpMode {
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft"); 
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
         DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        DcMotor rightSlide = hardwareMap.get(DcMotor.class,"rightSlide");
         
        DcMotor armOne = hardwareMap.get(DcMotor.class,"armOne");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
@@ -129,50 +128,35 @@ public class RobotCentric extends LinearOpMode {
 
 
             // Arm Movement
-            if (manipulatorGamepad.dpad_left) {
-                slidePose -= 5;
+            slidePose += (-manipulatorGamepad.left_stick_y * 10);
+
+
+            // Limits
+            if (slidePose < 0) {
+                slidePose = 0;
             }
-            if (manipulatorGamepad.dpad_right) {
-                slidePose += 5;
+            if (slidePose > 6510) {
+                slidePose = 6510;
             }
-            if (manipulatorGamepad.dpad_up) {
-                slidePose--;
-            }
-            if (manipulatorGamepad.dpad_up) {
-                slidePose++;
-            }
-            if (slidePose <= -126) {
-                slidePose = -126;
-            }
-            if (slidePose >= -5) {
-                slidePose = -5;
-            }
+            leftSlide.setTargetPosition(slidePose);
 
             //Slide Pose
+            armPose += (-manipulatorGamepad.right_stick_y * 5);
 
-            if (manipulatorGamepad.square) {
-                armPower = 0.5f;
+            if (armPose < 0) {
+                armPose = 0;
             }
-            if (manipulatorGamepad.circle) {
-                armPower = -0.5f;
+            if (armPose > 1833) {
+                armPose = 1833;
             }
-            if (manipulatorGamepad.cross) {
-                slidePose = -72;
-            }
-            if (manipulatorGamepad.triangle) {
-                slidePose = -7;
-            }
-            if (manipulatorGamepad.share) {
-                armPower = 0;
-            }
+            armOne.setTargetPosition(armPose);
 
 
 
-            armOne.setPower(armPower);
-            leftSlide.setPower(slidePose);
 
 
-            telemetry.addData("Arm One: ", armPower);
+
+            telemetry.addData("Arm One: ", armPose);
             telemetry.addData("Left Slide: ", slidePose);
 
 
