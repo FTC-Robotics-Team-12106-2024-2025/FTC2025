@@ -137,6 +137,16 @@ public class AutonLibrary  {
                 turn(false,true);
         }
     }
+    public void killSwitch(int tenths) {
+        //sets current time
+        long durationSucks = System.currentTimeMillis();
+        //stops current time
+        long stop = (durationSucks + tenths*100);
+        while (System. currentTimeMillis() < stop) {
+            //not even sure if this works or not. We can test it anyway
+            moveWheel(0,0);
+        }
+    }
 
     //
     //Claw Code
