@@ -243,7 +243,7 @@ public class AutonLibrary  {
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            linearVertical(6510);
+            linearVertical(6500);
         }
     }
 
@@ -292,7 +292,7 @@ public class AutonLibrary  {
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            armMovement(1833);
+            armMovement(1825);
         }
     }
 
