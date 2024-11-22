@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="AutonLibrary", group="Robot")
+
 public class AutonLibrary  {
     public DcMotor frontLeft = null;
     public DcMotor frontRight = null;
