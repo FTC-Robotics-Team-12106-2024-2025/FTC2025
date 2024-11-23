@@ -146,10 +146,10 @@ public class FieldCentric extends LinearOpMode {
 
             //extenderTwo += (manipulatorGamepad.left_stick_x);
             if (manipulatorGamepad.dpad_up) {
-                Extendo.setPower(0.01);
+                Extendo.setPower(0.3);
             }
             if (manipulatorGamepad.dpad_down) {
-                Extendo.setPower(-0.01);
+                Extendo.setPower(-0.3);
             }
             telemetry.addData("Extender Pose for Servo: ", extenderPose);
             telemetry.addData("Extender Pose for Motor", extenderTwo);
