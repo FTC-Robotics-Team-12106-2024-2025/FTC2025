@@ -19,6 +19,6 @@ public class AutonParkRightV1 extends LinearOpMode {
 
     AutonLibrary library = new AutonLibrary();
     public void runOpMode() {
-        library.moveForward(10);
+        library.strafeRight(15);
     }
 }
