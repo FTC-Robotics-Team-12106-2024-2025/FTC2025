@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+// Strafe 20 for half a tile, 40 for a tile
+
 public class AutonLibrary extends LinearOpMode {
     public DcMotor frontLeft;
     public DcMotor frontRight;
@@ -28,6 +30,8 @@ public class AutonLibrary extends LinearOpMode {
         leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
         Extendo = hardwareMap.get(CRServo.class,"Extendo");
 
+        waitForStart();
+
         autonCommands();
     }
 
@@ -47,7 +51,7 @@ public class AutonLibrary extends LinearOpMode {
         frontRight.setPower(fr/maxNumber);
         backLeft.setPower(bl/maxNumber);
         backRight.setPower(br/maxNumber); 
-        //Should do telemetery data thingy I hate this.
+        //Should do telemetery dataz thingy I hate this.
 
     }
    public final void turn(boolean rotateLeft, boolean rotateRight) {

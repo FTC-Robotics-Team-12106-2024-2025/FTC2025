@@ -5,10 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 public class AutonParkRightV1 extends AutonLibrary {
 
-
     @Override
     public void autonCommands() {
-        strafeRight(15);
+        strafeRight(20);
         killSwitch(10);
 
     }

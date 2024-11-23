@@ -23,6 +23,7 @@ public class FieldCentric extends LinearOpMode {
      public int slidePose = 0;
      public double extenderPose = 0;
      public int extenderTwo = 0;
+     public int clampPose = 0;
     @Override
     
     //Defines the motor
@@ -176,12 +177,15 @@ public class FieldCentric extends LinearOpMode {
 
 
             if (manipulatorGamepad.left_bumper) {
-                clawClamp.setPosition(1);
+//                clawClamp.setPosition(1);
+                clampPose++;
             }
             if (manipulatorGamepad.right_bumper) {
-                clawClamp.setPosition(0);
+//                clawClamp.setPosition(0);
+                clampPose--;
             }
-            telemetry.addData("Claw Position", clawClamp.getPosition());
+            clawClamp.setPosition(clampPose);
+            telemetry.addData("Claw Position", clampPose);
 
 
             if (driveGamepad.guide) {
