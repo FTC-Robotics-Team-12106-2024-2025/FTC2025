@@ -83,7 +83,7 @@ public class FieldCentric extends LinearOpMode {
             double linearCPR = 72.1;
             float y = -driveGamepad.left_stick_y;
             float x = driveGamepad.left_stick_x;
-         
+
             if (driveGamepad.dpad_left) {
                  x = -0.25f;
             }
@@ -139,10 +139,7 @@ public class FieldCentric extends LinearOpMode {
             //
             //Extender
             //
-            if (manipulatorGamepad.left_stick_x>0 || manipulatorGamepad.left_stick_x<0) {
-
-                Extendo.setPower(manipulatorGamepad.left_stick_x);
-            }
+            Extendo.setPower(manipulatorGamepad.left_stick_x);
 
             //extenderTwo += (manipulatorGamepad.left_stick_x);
             if (manipulatorGamepad.dpad_up) {
@@ -154,7 +151,7 @@ public class FieldCentric extends LinearOpMode {
             telemetry.addData("Extender Pose for Servo: ", extenderPose);
             telemetry.addData("Extender Pose for Motor", extenderTwo);
 
-            Extendo.setPower(0);
+
             //Extendo.setPosition(extenderTwo);
 
             //
