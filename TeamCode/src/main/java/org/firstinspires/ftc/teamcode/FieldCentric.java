@@ -18,7 +18,7 @@ public class FieldCentric extends LinearOpMode {
      Gamepad manipulatorGamepad = new Gamepad();
 
      // Variables
-     public double wrist = 4;
+     public double wrist = .4;
      public int armPose = 0;
      public int slidePose = 0;
      public double extenderPose = 0;
@@ -149,7 +149,7 @@ public class FieldCentric extends LinearOpMode {
                 Extendo.setPower(-0.3);
             }
             telemetry.addData("Extender Pose for Servo: ", extenderPose);
-            telemetry.addData("Extender Pose for Motor", extenderTwo);
+            telemetry.addData("Extender Pose for Motor",0);
 
 
             //Extendo.setPosition(extenderTwo);
