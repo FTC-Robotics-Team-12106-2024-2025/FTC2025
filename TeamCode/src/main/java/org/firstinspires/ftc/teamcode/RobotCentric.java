@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -36,7 +37,7 @@ public class RobotCentric extends LinearOpMode {
        DcMotor arm = hardwareMap.get(DcMotor.class,"arm");
        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
-        Servo Extendo = hardwareMap.get(Servo.class,"Extendo");
+       CRServo Extendo = hardwareMap.get(CRServo.class,"Extendo");
         //DcMotor Extendo = hardwareMap.get(DcMotor.class,"Extendo")
 
        // Setting arm position
@@ -155,7 +156,7 @@ public class RobotCentric extends LinearOpMode {
             telemetry.addData("Extender Pose for Servo: ", extenderPose);
             telemetry.addData("Extender Pose for Motor", extenderTwo);
 
-            Extendo.setPosition(extenderPose);
+            Extendo.setPower(extenderPose);
             //Extendo.setPosition(extenderTwo);
 
 

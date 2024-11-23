@@ -5,9 +5,11 @@ import android.media.MediaPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+
 
 @TeleOp
 
@@ -36,8 +38,7 @@ public class FieldCentric extends LinearOpMode {
         Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
         Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
         DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        Servo Extendo = hardwareMap.get(Servo.class,"Extendo");
-        //DcMotor Extendo = hardwareMap.get(DcMotor.class,"Extendo")
+        CRServo Extendo = hardwareMap.get(CRServo.class,"Extendo");
 
         // Setting Positions
         leftSlide.setTargetPosition(0);
@@ -152,7 +153,7 @@ public class FieldCentric extends LinearOpMode {
             telemetry.addData("Extender Pose for Servo: ", extenderPose);
             telemetry.addData("Extender Pose for Motor", extenderTwo);
 
-            Extendo.setPosition(extenderPose);
+            Extendo.setPower(extenderPose);
             //Extendo.setPosition(extenderTwo);
 
             //
