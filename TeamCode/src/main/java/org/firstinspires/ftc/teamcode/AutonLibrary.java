@@ -1,20 +1,41 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+public class AutonLibrary extends LinearOpMode {
+    public DcMotor frontLeft;
+    public DcMotor frontRight;
+    public DcMotor backLeft;
+    public DcMotor backRight;
+    public DcMotor leftSlide;
+    public DcMotor Arm;
+    public Servo clawRotate;
+    public Servo clawClamp;
+    public CRServo Extendo;
 
-public class AutonLibrary  {
-    public DcMotor frontLeft = null;
-    public DcMotor frontRight = null;
-    public DcMotor backLeft = null;
-    public DcMotor backRight = null;
-    public DcMotor leftSlide = null;
-    public DcMotor Arm = null;
-    public Servo clawClamp = null;
-    public Servo clawRotate = null;
+    public void runOpMode() {
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        Arm = hardwareMap.get(DcMotor.class,"arm");
+        clawRotate = hardwareMap.get(Servo.class,"clawRotate");
+        clawClamp = hardwareMap.get(Servo.class,"clawClamp");
+        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        Extendo = hardwareMap.get(CRServo.class,"Extendo");
 
-    public void moveWheel(double x,double y) {
+        autonCommands();
+    }
+
+    public void autonCommands() {
+
+    }
+
+    public final void moveWheel(double x,double y) {
          double fl = (y+x);
          double fr = (x-y);
          double bl = (y-x);
@@ -29,7 +50,7 @@ public class AutonLibrary  {
         //Should do telemetery data thingy I hate this.
 
     }
-   public void turn(boolean rotateLeft, boolean rotateRight) {
+   public final void turn(boolean rotateLeft, boolean rotateRight) {
         double fl, fr, bl, br;
 
         fl = fr = bl = br = 0;
@@ -45,14 +66,20 @@ public class AutonLibrary  {
              bl = -0.5;
              br = -0.5;
          }
-    } 
-    public void linearVertical(int verticalPose) {
+         frontLeft.setPower(fl);
+         frontRight.setPower(fr);
+         backLeft.setPower(bl);
+         backRight.setPower(br);
+   }
+
+   public final void linearVertical(int verticalPose) {
         leftSlide.setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftSlide.setPower(0.65);
         leftSlide.setTargetPosition(verticalPose);
     }
-    public void clawGrabber(float clawPose) {
+
+    public final void clawGrabber(float clawPose) {
         if (clawPose>0) {
             clawClamp.setPosition(clawPose);
         }
@@ -60,12 +87,14 @@ public class AutonLibrary  {
             clawClamp.setPosition(clawPose);
         }
     }
-    public void clawRot(float clawAngle) {
+
+    public final void clawRot(float clawAngle) {
         if (clawAngle>0) {
             clawRotate.setPosition(clawAngle);
         }
     }
-    public void armMovement(int armPose) {
+
+    public final void armMovement(int armPose) {
         Arm.setTargetPosition(0);
         Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Arm.setPower(0.65);
@@ -76,7 +105,7 @@ public class AutonLibrary  {
         //Movement Code
         //
 
-        public void moveForward(int tenths) {
+    public final void moveForward (int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
@@ -86,7 +115,7 @@ public class AutonLibrary  {
             moveWheel(0,0.5);
         }
     }
-        public void moveBackward(int tenths) {
+    public final void moveBackward(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
@@ -96,8 +125,9 @@ public class AutonLibrary  {
                 moveWheel(0,-0.5);
         }
     }
+
     //Hopefully strafe code works
-        public void strafeRight(int tenths) {
+    public final void strafeRight(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
@@ -107,7 +137,7 @@ public class AutonLibrary  {
                 moveWheel(0.5,0);
         }
     }
-        public void strafeLeft(int tenths) {
+    public final void strafeLeft(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
@@ -117,7 +147,7 @@ public class AutonLibrary  {
                 moveWheel(-0.5,0);
         }
     }
-       public void rotateLeft(int tenths) {
+       public final void rotateLeft(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
@@ -126,7 +156,7 @@ public class AutonLibrary  {
                 turn(true,false);
         }
     }
-    public void rotateRight(int tenths) {
+    public final void rotateRight(int tenths) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
@@ -135,7 +165,7 @@ public class AutonLibrary  {
                 turn(false,true);
         }
     }
-    public void killSwitch(int tenths) {
+    public final void killSwitch(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
