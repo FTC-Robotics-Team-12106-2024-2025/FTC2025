@@ -151,9 +151,7 @@ public class FieldCentric extends LinearOpMode {
             }
             telemetry.addData("Extender Pose for Servo: ", extenderPose);
             telemetry.addData("Extender Pose for Motor", extenderTwo);
-            if (extenderPose < 0) {
-                extenderPose = 0;
-            }
+
             Extendo.setPosition(extenderPose);
             //Extendo.setPosition(extenderTwo);
 
