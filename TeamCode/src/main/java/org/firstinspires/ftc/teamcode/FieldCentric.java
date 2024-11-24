@@ -177,15 +177,13 @@ public class FieldCentric extends LinearOpMode {
 
 
             if (manipulatorGamepad.left_bumper) {
-//                clawClamp.setPosition(1);
-                clampPose++;
+               clawClamp.setPosition(1);
+
             }
             if (manipulatorGamepad.right_bumper) {
-//                clawClamp.setPosition(0);
-                clampPose--;
+               clawClamp.setPosition(0);
             }
-            clawClamp.setPosition(clampPose);
-            telemetry.addData("Claw Position", clampPose);
+    
 
 
             if (driveGamepad.guide) {
