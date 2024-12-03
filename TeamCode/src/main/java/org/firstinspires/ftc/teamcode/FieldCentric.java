@@ -5,9 +5,11 @@ import android.media.MediaPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+
 
 @TeleOp
 
@@ -16,9 +18,12 @@ public class FieldCentric extends LinearOpMode {
      Gamepad manipulatorGamepad = new Gamepad();
 
      // Variables
-     public double wrist = 4;
+     public double wrist = .4;
      public int armPose = 0;
      public int slidePose = 0;
+     public double extenderPose = 0;
+     public int extenderTwo = 0;
+     public int clampPose = 0;
     @Override
     
     //Defines the motor
@@ -30,10 +35,11 @@ public class FieldCentric extends LinearOpMode {
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
 
 
-        DcMotor arm = hardwareMap.get(DcMotor.class,"armOne");
+        DcMotor arm = hardwareMap.get(DcMotor.class,"arm");
         Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
         Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
         DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        CRServo Extendo = hardwareMap.get(CRServo.class,"Extendo");
 
         // Setting Positions
         leftSlide.setTargetPosition(0);
@@ -43,6 +49,12 @@ public class FieldCentric extends LinearOpMode {
         arm.setTargetPosition(0);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setPower(0.65);
+
+        /*
+        Extendo.setTargetPosition(0);
+        Extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Extendo.setPower(0.65);
+         */
 
         // Gyroscope
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -72,7 +84,7 @@ public class FieldCentric extends LinearOpMode {
             double linearCPR = 72.1;
             float y = -driveGamepad.left_stick_y;
             float x = driveGamepad.left_stick_x;
-         
+
             if (driveGamepad.dpad_left) {
                  x = -0.25f;
             }
@@ -112,33 +124,42 @@ public class FieldCentric extends LinearOpMode {
             //
             // Arm Angle
             //
-            armPose += (-manipulatorGamepad.right_stick_y * 5);
-            if (manipulatorGamepad.dpad_up) {
-                armPose--;
+            armPose += (-manipulatorGamepad.right_stick_y * 10);
+
+            if (armPose < 0) {
+                armPose = 0;
             }
-            if (manipulatorGamepad.dpad_down) {
-                armPose++;
+            if (armPose > 1833) {
+                armPose = 1833;
             }
             arm.setTargetPosition(armPose);
 
-//            if (armPose <= -126) {
-//                armPose = -126;
-//            }
-//            if (armPose >= -5) {
-//                armPose = -5;
-//            }
+
             telemetry.addData("Arm Pose: ", armPose);
+
+            //
+            //Extender
+            //
+            Extendo.setPower(manipulatorGamepad.left_stick_x);
+
+            //extenderTwo += (manipulatorGamepad.left_stick_x);
+            if (manipulatorGamepad.dpad_up) {
+                Extendo.setPower(0.3);
+            }
+            if (manipulatorGamepad.dpad_down) {
+                Extendo.setPower(-0.3);
+            }
+            telemetry.addData("Extender Pose for Servo: ", extenderPose);
+            telemetry.addData("Extender Pose for Motor",0);
+
+
+            //Extendo.setPosition(extenderTwo);
 
             //
             // Linear Slide
             //
             slidePose += (-manipulatorGamepad.left_stick_y * 10);
-//            if (manipulatorGamepad.dpad_up) {
-//                slidePose++;
-//            }
-//            if (manipulatorGamepad.dpad_down) {
-//                slidePose--;
-//            }
+
 
             // Limits
             if (slidePose < 0) {
@@ -153,16 +174,16 @@ public class FieldCentric extends LinearOpMode {
             // Claw
             //
             //For up-movement of linear slide
-            double clawPosX = manipulatorGamepad.left_stick_x;
-//            double clawPosY = -manipulatorGamepad.left_stick_y;
+
 
             if (manipulatorGamepad.left_bumper) {
-                clawClamp.setPosition(1);
+               clawClamp.setPosition(1);
+
             }
             if (manipulatorGamepad.right_bumper) {
-                clawClamp.setPosition(0);
+               clawClamp.setPosition(0);
             }
-            telemetry.addData("Claw Position", clawClamp.getPosition());
+    
 
 
             if (driveGamepad.guide) {
@@ -185,7 +206,7 @@ public class FieldCentric extends LinearOpMode {
            if (wrist <= 0) {
                wrist = 0;
            }
-           if (manipulatorGamepad.right_stick_button) {
+           if (manipulatorGamepad.options) {
                wrist = .4;
            }
            clawRotate.setPosition(wrist);
