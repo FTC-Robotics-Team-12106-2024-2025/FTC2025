@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 
 @TeleOp
@@ -18,12 +21,17 @@ public class FieldCentric extends LinearOpMode {
      Gamepad manipulatorGamepad = new Gamepad();
 
      // Variables
-     public double wrist = .4;
+
      public int armPose = 0;
+
      public int slidePose = 0;
      public double extenderPose = 0;
      public int extenderTwo = 0;
      public int clampPose = 0;
+
+     ColorSensor color;
+
+     int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
     @Override
     
     //Defines the motor
@@ -35,20 +43,18 @@ public class FieldCentric extends LinearOpMode {
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
 
 
-        DcMotor arm = hardwareMap.get(DcMotor.class,"arm");
-        Servo clawRotate = hardwareMap.get(Servo.class,"clawRotate");
-        Servo clawClamp = hardwareMap.get(Servo.class,"clawClamp");
+        Servo arm = hardwareMap.get(Servo.class,"arm");
         DcMotor leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        CRServo Extendo = hardwareMap.get(CRServo.class,"Extendo");
+        CRServo intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
+        CRServo intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
+        Servo wrist = hardwareMap.get(Servo.class,"wrist");
 
         // Setting Positions
         leftSlide.setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftSlide.setPower(0.65);
 
-        arm.setTargetPosition(0);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(0.65);
+
 
         /*
         Extendo.setTargetPosition(0);
@@ -62,13 +68,11 @@ public class FieldCentric extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-        MediaPlayer mediaPlayer;
-        mediaPlayer = MediaPlayer.create(hardwareMap.appContext, R.raw.horn);
+
 
         waitForStart();
 
         if (isStopRequested()) {
-            mediaPlayer.release();
             return;
         }
         
@@ -132,28 +136,12 @@ public class FieldCentric extends LinearOpMode {
             if (armPose > 1833) {
                 armPose = 1833;
             }
-            arm.setTargetPosition(armPose);
+            arm.setPosition(armPose);
 
 
             telemetry.addData("Arm Pose: ", armPose);
 
-            //
-            //Extender
-            //
-            Extendo.setPower(manipulatorGamepad.left_stick_x);
 
-            //extenderTwo += (manipulatorGamepad.left_stick_x);
-            if (manipulatorGamepad.dpad_up) {
-                Extendo.setPower(0.3);
-            }
-            if (manipulatorGamepad.dpad_down) {
-                Extendo.setPower(-0.3);
-            }
-            telemetry.addData("Extender Pose for Servo: ", extenderPose);
-            telemetry.addData("Extender Pose for Motor",0);
-
-
-            //Extendo.setPosition(extenderTwo);
 
             //
             // Linear Slide
@@ -176,42 +164,40 @@ public class FieldCentric extends LinearOpMode {
             //For up-movement of linear slide
 
 
-            if (manipulatorGamepad.left_bumper) {
-               clawClamp.setPosition(1);
 
-            }
-            if (manipulatorGamepad.right_bumper) {
-               clawClamp.setPosition(0);
-            }
-    
-
-
-            if (driveGamepad.guide) {
-                if (!mediaPlayer.isPlaying())
-                    mediaPlayer.start();
-                else {
-                    mediaPlayer.pause();
-                    mediaPlayer.seekTo(0);
-                }
-            }
             if (manipulatorGamepad.left_trigger >= .9) {
-                wrist -= .05;
+                intakeOne.setPower(-0.75);
+                intakeTwo.setPower(-0.75);
+
             }
            if (manipulatorGamepad.right_trigger >= .9) {
-               wrist += .05;
+               intakeOne.setPower(0.75);
+               intakeTwo.setPower(0.75);
            }
-           if (wrist >= 1) {
-               wrist = 1;
-           }
-           if (wrist <= 0) {
-               wrist = 0;
-           }
+           //Emergency Stop
            if (manipulatorGamepad.options) {
-               wrist = .4;
+               intakeOne.setPower(0);
+               intakeTwo.setPower(0);
            }
-           clawRotate.setPosition(wrist);
 
-           telemetry.update();
+           if (manipulatorGamepad.share) {
+               colorFilter++;
+               if (colorFilter > 2) {
+                   colorFilter = 0;
+               }
+
+           }
+
+
+
+
+           //ColorSort
+
+            ColorSensor color = hardwareMap.get(ColorSensor.class, "color");
+            telemetry.addData("Red",color.red());
+            telemetry.addData("Blue",color.blue());
+            telemetry.addData("Green",color.green());
+            telemetry.update();
         }
     }
 }
