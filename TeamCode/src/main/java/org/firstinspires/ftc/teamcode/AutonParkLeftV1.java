@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous (name="Auton For Right Field", group = "Robot")
+@Autonomous (name="Auton For Left Field", group = "Robot")
 
-public class AutonParkRightV1 extends AutonLibrary {
+public class AutonParkLeftV1 extends  AutonLibrary{
 
     @Override
     public void autonCommands() {
-        strafeRight(50);
+        strafeRight(200);
         killSwitch(10);
 
     }

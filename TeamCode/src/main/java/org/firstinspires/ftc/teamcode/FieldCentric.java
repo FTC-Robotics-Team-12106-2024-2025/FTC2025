@@ -7,11 +7,20 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 
 @TeleOp
@@ -29,11 +38,10 @@ public class FieldCentric extends LinearOpMode {
      public int extenderTwo = 0;
      public int clampPose = 0;
 
-     ColorSensor color;
 
      int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
     @Override
-    
+
     //Defines the motor
     public void runOpMode() {
         // Drive Motors
@@ -48,6 +56,11 @@ public class FieldCentric extends LinearOpMode {
         CRServo intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
         CRServo intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
         Servo wrist = hardwareMap.get(Servo.class,"wrist");
+
+        ColorSensor color = hardwareMap.get(ColorSensor.class, "color");
+        DistanceSensor colorDistance = hardwareMap.get(DistanceSensor.class, "color");
+        ElapsedTime timer = new ElapsedTime();
+        boolean sortActive = false;
 
         // Setting Positions
         leftSlide.setTargetPosition(0);
@@ -68,6 +81,12 @@ public class FieldCentric extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
+        int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
+
+        HashMap<Integer, String> colorData = new HashMap<Integer, String>();
+        colorData.put(0, "Filtering for RED samples");
+        colorData.put(1, "Filtering for BLUE samples");
+        colorData.put(2, "Filtering for YELLOW samples");
 
 
         waitForStart();
@@ -103,7 +122,7 @@ public class FieldCentric extends LinearOpMode {
             }
 
             double currentHeading = -imu.getAngularOrientation().firstAngle;
-//            boolean honk = driveGamepad.left_stick_button;
+//          boolean honk = driveGamepad.left_stick_button;
             double rotateRight = driveGamepad.right_trigger;
             double rotateLeft = driveGamepad.left_trigger;
             double rx = rotateRight-rotateLeft;
@@ -166,34 +185,49 @@ public class FieldCentric extends LinearOpMode {
 
 
             if (manipulatorGamepad.left_trigger >= .9) {
-                intakeOne.setPower(-0.75);
-                intakeTwo.setPower(-0.75);
+                intakeOne.setPower(-0.75);intakeTwo.setPower(-0.75);
 
             }
            if (manipulatorGamepad.right_trigger >= .9) {
-               intakeOne.setPower(0.75);
-               intakeTwo.setPower(0.75);
+               intakeOne.setPower(0.75); intakeTwo.setPower(0.75);
            }
            //Emergency Stop
            if (manipulatorGamepad.options) {
-               intakeOne.setPower(0);
-               intakeTwo.setPower(0);
+               intakeOne.setPower(0); intakeTwo.setPower(0);
            }
+           if (manipulatorGamepad.circle){ // for async
+               sortActive = true;
+           }
+           if (sortActive){
+               intakeOne.setPower(-0.75); intakeOne.setPower(-0.75); // powers might be wrong
+               int red = thresholds[colorFilter][0]; int blue = thresholds[colorFilter][1]; int green = thresholds[colorFilter][2];
+               if (colorDistance.getDistance(DistanceUnit.CM) < 2.0){
+                   intakeOne.setPower(0); intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
+                   if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10){
+                       driveGamepad.rumble(50); manipulatorGamepad.rumble(50);
+                   }
+                   else {
+                       timer.reset();// might reset too much
+                       intakeOne.setPower(0.75);intakeTwo.setPower(0.75);
+                       if (timer.milliseconds() >= 500){ // might not resolve if it checks it immediately (checks right after timer is on and never flips direction)
+                           intakeOne.setPower(-0.75);intakeTwo.setPower(-0.75);
+                       }
+                   }
+               }
+           }
+           //ColorSort
 
            if (manipulatorGamepad.share) {
                colorFilter++;
                if (colorFilter > 2) {
                    colorFilter = 0;
                }
-
+               telemetry.clearAll();// Updates which type of color sort it is; other info will be printed due to it being a while loop
+               telemetry.addData(colorData.get(colorFilter), colorFilter);
+               telemetry.update();
            }
 
 
-
-
-           //ColorSort
-
-            ColorSensor color = hardwareMap.get(ColorSensor.class, "color");
             telemetry.addData("Red",color.red());
             telemetry.addData("Blue",color.blue());
             telemetry.addData("Green",color.green());
