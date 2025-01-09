@@ -88,6 +88,15 @@ public class FieldCentric extends LinearOpMode {
         colorData.put(1, "Filtering for BLUE samples");
         colorData.put(2, "Filtering for YELLOW samples");
 
+        HashMap<Integer, int[]> sampleHave = new HashMap<>();// colors when sample is held
+        sampleHave.put(0, new int[] {211,41,37});
+        sampleHave.put(1, new int[] {55,89,223});
+        sampleHave.put(2, new int[] {241,178,14});
+
+        HashMap<Integer, int[]> sampleLook = new HashMap<>(); // colors when looking for sample
+        sampleLook.put(0, new int[] {233,141,138});
+        sampleLook.put(1, new int[] {155,172,239});
+        sampleLook.put(2, new int[] {246, 217, 135});
 
         waitForStart();
 
@@ -199,12 +208,14 @@ public class FieldCentric extends LinearOpMode {
                sortActive = true;
            }
            if (sortActive){
+               manipulatorGamepad.setLedColor(sampleLook.get(colorFilter)[0],sampleLook.get(colorFilter)[1],sampleLook.get(colorFilter)[2],1000);
                intakeOne.setPower(-0.75); intakeOne.setPower(-0.75); // powers might be wrong
                int red = thresholds[colorFilter][0]; int blue = thresholds[colorFilter][1]; int green = thresholds[colorFilter][2];
                if (colorDistance.getDistance(DistanceUnit.CM) < 2.0){
                    intakeOne.setPower(0); intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
                    if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10){
                        driveGamepad.rumble(50); manipulatorGamepad.rumble(50);
+                       manipulatorGamepad.setLedColor(sampleHave.get(colorFilter)[0],sampleHave.get(colorFilter)[1],sampleHave.get(colorFilter)[2], 1000);
                        sortActive = false;
                    }
                    else {
@@ -227,7 +238,6 @@ public class FieldCentric extends LinearOpMode {
                telemetry.addData(colorData.get(colorFilter), colorFilter);
                telemetry.update();
            }
-
 
             telemetry.addData("Red",color.red());
             telemetry.addData("Blue",color.blue());
