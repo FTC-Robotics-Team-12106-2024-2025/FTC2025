@@ -205,6 +205,7 @@ public class FieldCentric extends LinearOpMode {
                    intakeOne.setPower(0); intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
                    if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10){
                        driveGamepad.rumble(50); manipulatorGamepad.rumble(50);
+                       sortActive = false;
                    }
                    else {
                        timer.reset();// might reset too much
