@@ -1,26 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.media.MediaPlayer;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 
 @TeleOp
@@ -38,8 +28,8 @@ public class FieldCentric extends LinearOpMode {
      public int extenderTwo = 0;
      public int clampPose = 0;
 
+    int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
-     int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
     @Override
 
     //Defines the motor
@@ -81,22 +71,11 @@ public class FieldCentric extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
+        //All arrays based off the colorFilter variable
         int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
-
-        HashMap<Integer, String> colorData = new HashMap<Integer, String>();
-        colorData.put(0, "Filtering for RED samples");
-        colorData.put(1, "Filtering for BLUE samples");
-        colorData.put(2, "Filtering for YELLOW samples");
-
-        HashMap<Integer, int[]> sampleHave = new HashMap<>();// colors when sample is held
-        sampleHave.put(0, new int[] {211,41,37});
-        sampleHave.put(1, new int[] {55,89,223});
-        sampleHave.put(2, new int[] {241,178,14});
-
-        HashMap<Integer, int[]> sampleLook = new HashMap<>(); // colors when looking for sample
-        sampleLook.put(0, new int[] {233,141,138});
-        sampleLook.put(1, new int[] {155,172,239});
-        sampleLook.put(2, new int[] {246, 217, 135});
+        String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
+        int[][] sampleHave = {{211,41,37},{55,89,223},{241,178,14}};
+        int[][] sampleLook = {{233,141,138},{155,172,239},{246, 217, 135}};
 
         waitForStart();
 
@@ -208,14 +187,14 @@ public class FieldCentric extends LinearOpMode {
                sortActive = true;
            }
            if (sortActive){
-               manipulatorGamepad.setLedColor(sampleLook.get(colorFilter)[0],sampleLook.get(colorFilter)[1],sampleLook.get(colorFilter)[2],1000);
+               manipulatorGamepad.setLedColor(sampleLook[colorFilter][0],sampleLook[colorFilter][1],sampleLook[colorFilter][2],1000);
                intakeOne.setPower(-0.75); intakeOne.setPower(-0.75); // powers might be wrong
                int red = thresholds[colorFilter][0]; int blue = thresholds[colorFilter][1]; int green = thresholds[colorFilter][2];
                if (colorDistance.getDistance(DistanceUnit.CM) < 2.0){
                    intakeOne.setPower(0); intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
                    if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10){
                        driveGamepad.rumble(50); manipulatorGamepad.rumble(50);
-                       manipulatorGamepad.setLedColor(sampleHave.get(colorFilter)[0],sampleHave.get(colorFilter)[1],sampleHave.get(colorFilter)[2], 1000);
+                       manipulatorGamepad.setLedColor(sampleHave[colorFilter][0],sampleHave[colorFilter][1],sampleHave[colorFilter][2], 1000);
                        sortActive = false;
                    }
                    else {
@@ -235,7 +214,7 @@ public class FieldCentric extends LinearOpMode {
                    colorFilter = 0;
                }
                telemetry.clearAll();// Updates which type of color sort it is; other info will be printed due to it being a while loop
-               telemetry.addData(colorData.get(colorFilter), colorFilter);
+               telemetry.addData(colorData[colorFilter], colorFilter);
                telemetry.update();
            }
 
