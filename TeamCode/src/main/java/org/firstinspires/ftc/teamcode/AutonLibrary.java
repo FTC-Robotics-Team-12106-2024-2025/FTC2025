@@ -24,6 +24,8 @@ public class AutonLibrary extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         slide = hardwareMap.get(DcMotor.class, "leftSlide");
         joint = hardwareMap.get(Servo.class,"joint");
+        intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
+        intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
 
         waitForStart();
 
@@ -78,7 +80,10 @@ public class AutonLibrary extends LinearOpMode {
         slide.setTargetPosition(verticalPose);
     }
 //Write the Intake Code Here
-
+public final void Intake(double intakeDir) {
+        intakeOne.setPower(intakeDir);
+        intakeTwo.setPower(intakeDir);
+}
 
     public final void jointMovement(double jointPose) {
         joint.setPosition(jointPose);
@@ -163,7 +168,36 @@ public class AutonLibrary extends LinearOpMode {
     //
     //Claw Code (Write It Here)
     //
-
+    public final void intakeIn(int tenths) {
+        //sets current time
+        long durationSucks = System.currentTimeMillis();
+        //stops current time
+        long stop = (durationSucks + tenths*100);
+        while (System. currentTimeMillis() < stop) {
+            //not even sure if this works or not. We can test it anyway
+            Intake(-0.75);
+        }
+    }
+    public final void intakeOut(int tenths) {
+        //sets current time
+        long durationSucks = System.currentTimeMillis();
+        //stops current time
+        long stop = (durationSucks + tenths*100);
+        while (System. currentTimeMillis() < stop) {
+            //not even sure if this works or not. We can test it anyway
+            Intake(0.75);
+        }
+    }
+    public final void intakeStop(int tenths) {
+        //sets current time
+        long durationSucks = System.currentTimeMillis();
+        //stops current time
+        long stop = (durationSucks + tenths*100);
+        while (System. currentTimeMillis() < stop) {
+            //not even sure if this works or not. We can test it anyway
+            Intake(0);
+        }
+    }
 
 
     //
