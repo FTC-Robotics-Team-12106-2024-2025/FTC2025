@@ -12,23 +12,18 @@ public class AutonLibrary extends LinearOpMode {
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
-    public DcMotor leftSlide;
-    public DcMotor Arm;
-    public Servo clawRotate;
-    public Servo clawClamp;
-    public CRServo Extendo;
+    public DcMotor slide;
+    public Servo joint;
+    public CRServo intakeOne;
+    public CRServo intakeTwo;
 
     public void runOpMode() {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
-        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        Arm = hardwareMap.get(DcMotor.class,"arm");
-        clawRotate = hardwareMap.get(Servo.class,"clawRotate");
-        clawClamp = hardwareMap.get(Servo.class,"clawClamp");
-        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        Extendo = hardwareMap.get(CRServo.class,"Extendo");
+        slide = hardwareMap.get(DcMotor.class, "leftSlide");
+        joint = hardwareMap.get(Servo.class,"joint");
 
         waitForStart();
 
@@ -77,32 +72,16 @@ public class AutonLibrary extends LinearOpMode {
    }
 
    public final void linearVertical(int verticalPose) {
-        leftSlide.setTargetPosition(0);
-        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftSlide.setPower(0.65);
-        leftSlide.setTargetPosition(verticalPose);
+        slide.setTargetPosition(0);
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slide.setPower(0.65);
+        slide.setTargetPosition(verticalPose);
     }
+//Write the Intake Code Here
 
-    public final void clawGrabber(float clawPose) {
-        if (clawPose>0) {
-            clawClamp.setPosition(clawPose);
-        }
-        else if (clawPose <= 0) {
-            clawClamp.setPosition(clawPose);
-        }
-    }
 
-    public final void clawRot(float clawAngle) {
-        if (clawAngle>0) {
-            clawRotate.setPosition(clawAngle);
-        }
-    }
-
-    public final void armMovement(int armPose) {
-        Arm.setTargetPosition(0);
-        Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Arm.setPower(0.65);
-        Arm.setTargetPosition(armPose);
+    public final void jointMovement(double jointPose) {
+        joint.setPosition(jointPose);
     }
 
         //
@@ -129,6 +108,7 @@ public class AutonLibrary extends LinearOpMode {
                 moveWheel(0,-0.5);
         }
     }
+    //
 
     //Hopefully strafe code works
     public final void strafeRight(int tenths) {
@@ -181,63 +161,10 @@ public class AutonLibrary extends LinearOpMode {
     }
 
     //
-    //Claw Code
+    //Claw Code (Write It Here)
     //
 
-    public void clawOpen(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            clawGrabber(1);
-        }
-    }
-    public void clawClose(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            clawGrabber(0);
-        }
-    }
-    public void clawZero(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            clawRot(0);
-        }
-    }
-    public void clawNinety(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            clawRot(0.25F);
-        }
-    }
-    public void clawOneEighty(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            clawRot(0.5F);
-        }
-    }
-    public void clawTwoSeventy(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            clawRot(0.75F);
-        }
-    }
+
 
     //
     //Slide Code
@@ -258,7 +185,7 @@ public class AutonLibrary extends LinearOpMode {
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            linearVertical(1627);
+            linearVertical(1525);
         }
     }
     public void slideHalf(int tenths) {
@@ -267,7 +194,7 @@ public class AutonLibrary extends LinearOpMode {
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            linearVertical(3255);
+            linearVertical(3050);
         }
     }
     public void slideThreeQuarts(int tenths) {
@@ -276,7 +203,7 @@ public class AutonLibrary extends LinearOpMode {
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            linearVertical(4883);
+            linearVertical(4575);
         }
     }
     public void slideMax(int tenths) {
@@ -285,56 +212,57 @@ public class AutonLibrary extends LinearOpMode {
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            linearVertical(6500);
+            linearVertical(6100);
         }
     }
 
     //
     //Arm Code
     //
-    public void armZero(int tenths) {
+
+    public void jointZero(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            armMovement(0);
+            jointMovement(0);
         }
     }
-    public void armQuarter(int tenths) {
+    public void jointQuarter(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            armMovement(458);
+            jointMovement(0.25);
         }
     }
-    public void armHalf(int tenths) {
+    public void jointHalf(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            armMovement(916);
+        long stop = (durationSucks + tenths * 100);
+        while (System.currentTimeMillis() < stop) {
+            jointMovement(0.5);
         }
     }
-    public void armThreeQuarts(int tenths) {
+    public void jointThreeQuarts(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            armMovement(1375);
+            jointMovement(0.75);
         }
     }
-    public void armMax(int tenths) {
+    public void jointMax(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            armMovement(1825);
+            jointMovement(1);
         }
     }
 
