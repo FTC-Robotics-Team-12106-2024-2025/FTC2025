@@ -4,6 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 // Strafe 20 for half a tile, 40 for a tile
 
@@ -16,6 +20,10 @@ public class AutonLibrary extends LinearOpMode {
     public Servo joint;
     public CRServo intakeOne;
     public CRServo intakeTwo;
+    public ColorSensor color;
+    public DistanceSensor colorDistance;
+    public ElapsedTime timer;
+
 
     public void runOpMode() {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -26,7 +34,10 @@ public class AutonLibrary extends LinearOpMode {
         joint = hardwareMap.get(Servo.class,"joint");
         intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
         intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
-
+        int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
+        String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
+        int[][] sampleHave = {{211,41,37},{55,89,223},{241,178,14}};
+        int[][] sampleLook = {{233,141,138},{155,172,239},{246, 217, 135}};
         waitForStart();
 
         autonCommands();
@@ -79,10 +90,38 @@ public class AutonLibrary extends LinearOpMode {
         slide.setPower(0.65);
         slide.setTargetPosition(verticalPose);
     }
-//Write the Intake Code Here
+//I use one function for the entire intake code. Probably will change with color sensor
 public final void Intake(double intakeDir) {
         intakeOne.setPower(intakeDir);
         intakeTwo.setPower(intakeDir);
+}
+//sets the color of the sensor
+
+public final void startSensor(boolean sortActive, int colorFilter) {
+        if (sortActive) {
+            int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
+            intakeOne.setPower(-0.75);
+            intakeTwo.setPower(-0.75); // powers might be wrong
+            int red = thresholds[colorFilter][0];
+            int blue = thresholds[colorFilter][1];
+            int green = thresholds[colorFilter][2];
+            if (colorDistance.getDistance(DistanceUnit.CM) < 2.0) {
+                intakeOne.setPower(0);
+                intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
+                if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10) {
+                    sortActive = false;
+                } else {
+                    timer.reset();// might reset too much
+                    intakeOne.setPower(0.75);
+                    intakeTwo.setPower(0.75);
+                    if (timer.milliseconds() >= 500) { // might not resolve if it checks it immediately (checks right after timer is on and never flips direction)
+                        intakeOne.setPower(-0.75);
+                        intakeTwo.setPower(-0.75);
+                    }
+                }
+            }
+        }
+
 }
 
     public final void jointMovement(double jointPose) {
@@ -166,7 +205,7 @@ public final void Intake(double intakeDir) {
     }
 
     //
-    //Claw Code (Write It Here)
+    //Intake Code ig, pretty self explanatory
     //
     public final void intakeIn(int tenths) {
         //sets current time

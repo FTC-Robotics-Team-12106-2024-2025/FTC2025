@@ -53,7 +53,7 @@ public class FieldCentric extends LinearOpMode {
         // Setting Positions
         slide.setTargetPosition(0);
         slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slide.setPower(.65);
+        slide.setPower(.8);
 
         // Gyroscope
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
