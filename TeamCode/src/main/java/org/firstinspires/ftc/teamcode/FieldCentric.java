@@ -23,7 +23,7 @@ public class FieldCentric extends LinearOpMode {
 
      // Variables
 
-     public float jointPose = 0;
+     public int jointPose = 0;
      public int slidePose = 0;
      public float wristPose = 0;
 
@@ -39,7 +39,7 @@ public class FieldCentric extends LinearOpMode {
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        Servo jointServo = hardwareMap.get(Servo.class,"joint");
+        DcMotor jointMotor = hardwareMap.get(DcMotor.class,"joint");
         DcMotor slide = hardwareMap.get(DcMotor.class, "slide");
         CRServo intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
         CRServo intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
@@ -62,7 +62,7 @@ public class FieldCentric extends LinearOpMode {
         imu.initialize(parameters);
 
         //All arrays based off the colorFilter variable
-        int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
+        int[][] thresholds = {{130,40,40},{30,50,40},{170,60,100}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
         String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
         int[][] sampleHave = {{211,41,37},{55,89,223},{241,178,14}};
         int[][] sampleLook = {{233,141,138},{155,172,239},{246, 217, 135}};
@@ -128,14 +128,14 @@ public class FieldCentric extends LinearOpMode {
 //            jointPose += (-manipulatorGamepad.right_stick_y * 10);
             jointPose += -manipulatorGamepad.right_stick_y * .05;
 
-            if (jointPose < 0) {
+            if (jointPose < -1000) {
                 jointPose = 0;
             }
-            if (jointPose > 1) {
+            if (jointPose > 0) {
                 jointPose = 1;
             }
-            jointServo.setPosition(jointPose);
-            telemetry.addData("Joint Pose: ", jointPose);
+            jointMotor.setTargetPosition(jointPose);
+            telemetry.addData("Arm Pose: ", jointPose);
 
             //
             // Linear Slide
