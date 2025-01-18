@@ -39,7 +39,7 @@ public class FieldCentric extends LinearOpMode {
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        DcMotor jointMotor = hardwareMap.get(DcMotor.class,"joint");
+        DcMotor jointMotor = hardwareMap.get(DcMotor.class,"jointMotor");
         DcMotor slide = hardwareMap.get(DcMotor.class, "slide");
         CRServo intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
         CRServo intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
