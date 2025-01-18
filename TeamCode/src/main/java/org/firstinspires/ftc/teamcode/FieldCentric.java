@@ -26,12 +26,14 @@ public class FieldCentric extends LinearOpMode {
      public int jointPose = 0;
      public int slidePose = 0;
      public float wristPose = 0;
+     public int Test;
 
-    int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
-    public int jointLiftUpPosition = 500;//change this value according to encoder
-    public int jointLiftDownPosition = 200;//change this value according to encoder
-    public int targetLiftPosition = 0;//updates in if statement, DO NOT CHANGE
+     int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
+
+     public int jointLiftUpPosition = -8000;//change this value according to encoder
+     public int jointLiftDownPosition = 500;//change this value according to encoder
+     public int targetLiftPosition = 0;//updates in if statement, DO NOT CHANGE
 
 
 
@@ -60,13 +62,20 @@ public class FieldCentric extends LinearOpMode {
         jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //encoders
+        //slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+//slide
+        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //joint
+        jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // Setting Positions
-        slide.setTargetPosition(0);
-        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slide.setPower(.8);
-
+//        // Setting Positions
+//        slide.setTargetPosition(targetLiftPosition);
+//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        slide.setPower(.8);
+//
 //        jointMotor.setTargetPosition(targetLiftPosition);
 //        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        jointMotor.setPower(.8);
@@ -94,18 +103,30 @@ public class FieldCentric extends LinearOpMode {
             driveGamepad.copy(gamepad1);
             manipulatorGamepad.copy(gamepad2);
 
-            //joint
-            jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            Test = jointMotor.getCurrentPosition();
 
-            jointMotor.setTargetPosition(0);
-            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            jointMotor.setPower(.8);
+
+//            jointMotor.setTargetPosition(0);
+//            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            jointMotor.setPower(.8);
+
+            // Setting Positions
+//        slide.setTargetPosition(0);
+//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        slide.setPower(.8);
+
+        jointMotor.setTargetPosition(targetLiftPosition);
+        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        jointMotor.setPower(.8);
 
             if (manipulatorGamepad.dpad_up) {
                 targetLiftPosition = jointLiftUpPosition;
+
             } else if (manipulatorGamepad.dpad_down) {
                 targetLiftPosition = jointLiftDownPosition;
+
             }
+
             //
             // Drive
             //
@@ -153,12 +174,19 @@ public class FieldCentric extends LinearOpMode {
             //
             // Arm Angle (Joint)
             //
-//            jointPose += (-manipulatorGamepad.right_stick_y * 10);
-            jointPose += manipulatorGamepad.right_stick_y * .05;
 
+            jointPose += (-manipulatorGamepad.right_stick_y * 100);
+
+            if (jointPose > 0) {
+                jointPose = 0;
+            }
+            if (jointPose < -1570) {
+                jointPose = -1570;
+            }
 
             jointMotor.setTargetPosition(jointPose);
-            telemetry.addData("Arm Pose: ", jointPose);
+            telemetry.addData("Measured Arm Position: ", jointPose);
+
 
             //
             // Linear Slide
@@ -174,11 +202,10 @@ public class FieldCentric extends LinearOpMode {
             }
 
             //Joint
-            telemetry.addData("jointM",jointMotor);
-           // telemetry.addData("jointP",jointPose);
+           telemetry.addData("jointP", jointPose);
 
             slide.setTargetPosition(slidePose);
-            telemetry.addData("SlidePose",slidePose);
+            telemetry.addData("SlidePose: ", slidePose);
 
             //
             // Wrist
