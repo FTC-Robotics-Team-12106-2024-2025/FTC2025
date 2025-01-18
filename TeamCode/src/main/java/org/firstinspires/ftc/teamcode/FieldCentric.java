@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
@@ -31,8 +30,8 @@ public class FieldCentric extends LinearOpMode {
 
      int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
-     public int jointLiftUpPosition = -8000;//change this value according to encoder
-     public int jointLiftDownPosition = 500;//change this value according to encoder
+     public final int JOINT_LIFT_POSITION = -452;
+     public final int JOINT_DOWN_POSITION = -1600;//change this value according to encoder
      public int targetLiftPosition = 0;//updates in if statement, DO NOT CHANGE
 
 
@@ -72,13 +71,13 @@ public class FieldCentric extends LinearOpMode {
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        // Setting Positions
-//        slide.setTargetPosition(targetLiftPosition);
-//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        slide.setPower(.8);
+        slide.setTargetPosition(targetLiftPosition);
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slide.setPower(.8);
 //
-//        jointMotor.setTargetPosition(targetLiftPosition);
-//        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        jointMotor.setPower(.8);
+        jointMotor.setTargetPosition(targetLiftPosition);
+        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        jointMotor.setPower(.8);
 
         // Gyroscope
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -111,21 +110,6 @@ public class FieldCentric extends LinearOpMode {
 //            jointMotor.setPower(.8);
 
             // Setting Positions
-//        slide.setTargetPosition(0);
-//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        slide.setPower(.8);
-
-        jointMotor.setTargetPosition(targetLiftPosition);
-        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        jointMotor.setPower(.8);
-
-            if (manipulatorGamepad.dpad_up) {
-                targetLiftPosition = jointLiftUpPosition;
-
-            } else if (manipulatorGamepad.dpad_down) {
-                targetLiftPosition = jointLiftDownPosition;
-
-            }
 
             //
             // Drive
@@ -175,17 +159,24 @@ public class FieldCentric extends LinearOpMode {
             // Arm Angle (Joint)
             //
 
-            jointPose += (-manipulatorGamepad.right_stick_y * 100);
+            jointPose += (-manipulatorGamepad.right_stick_y * 50);
 
             if (jointPose > 0) {
                 jointPose = 0;
             }
-            if (jointPose < -1570) {
-                jointPose = -1570;
+            if (jointPose < -1600) {
+                jointPose = -1600;
+            }
+
+            if (manipulatorGamepad.dpad_up) {
+                jointPose = JOINT_LIFT_POSITION;
+
+            } else if (manipulatorGamepad.dpad_down) {
+                jointPose = JOINT_DOWN_POSITION;
             }
 
             jointMotor.setTargetPosition(jointPose);
-            telemetry.addData("Measured Arm Position: ", jointPose);
+            telemetry.addData("Joint Angular Position: ", jointPose);
 
 
             //
@@ -201,11 +192,8 @@ public class FieldCentric extends LinearOpMode {
                 slidePose = 6100;
             }
 
-            //Joint
-           telemetry.addData("jointP", jointPose);
-
             slide.setTargetPosition(slidePose);
-            telemetry.addData("SlidePose: ", slidePose);
+            telemetry.addData("Slide Linear Position: ", slidePose);
 
             //
             // Wrist
@@ -224,7 +212,7 @@ public class FieldCentric extends LinearOpMode {
                 wristPose = 1;
             }
             wrist.setPosition(wristPose);
-            telemetry.addData("WristPose",wristPose);
+            telemetry.addData("Wrist Angular Position",wristPose);
 
             //
             // Intake
