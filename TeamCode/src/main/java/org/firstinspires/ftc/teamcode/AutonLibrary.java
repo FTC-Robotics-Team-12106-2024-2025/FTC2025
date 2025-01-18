@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -17,7 +16,7 @@ public class AutonLibrary extends LinearOpMode {
     public DcMotor backLeft;
     public DcMotor backRight;
     public DcMotor slide;
-    public Servo joint;
+    public DcMotor jointMotor;
     public CRServo intakeOne;
     public CRServo intakeTwo;
     public ColorSensor color;
@@ -31,7 +30,7 @@ public class AutonLibrary extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         slide = hardwareMap.get(DcMotor.class, "leftSlide");
-        joint = hardwareMap.get(Servo.class,"joint");
+        jointMotor = hardwareMap.get(DcMotor.class,"jointMotor");
         intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
         intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
         int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
@@ -124,9 +123,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
 
 }
 
-    public final void jointMovement(double jointPose) {
-        joint.setPosition(jointPose);
-    }
+
 
         //
         //Movement Code
@@ -293,49 +290,14 @@ public final void startSensor(boolean sortActive, int colorFilter) {
     //Arm Code
     //
 
-    public void jointZero(int tenths) {
+
+    public void jointPower(int tenths, int jointPose) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            jointMovement(0);
-        }
-    }
-    public void jointQuarter(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            jointMovement(0.25);
-        }
-    }
-    public void jointHalf(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths * 100);
-        while (System.currentTimeMillis() < stop) {
-            jointMovement(0.5);
-        }
-    }
-    public void jointThreeQuarts(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            jointMovement(0.75);
-        }
-    }
-    public void jointMax(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);
-        while (System. currentTimeMillis() < stop) {
-            jointMovement(1);
+            jointMotor.setTargetPosition(jointPose);
         }
     }
 
