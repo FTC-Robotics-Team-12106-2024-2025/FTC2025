@@ -29,6 +29,12 @@ public class FieldCentric extends LinearOpMode {
 
     int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
+    public int jointLiftUpPosition = 500;//change this value according to encoder
+    public int jointLiftDownPosition = 200;//change this value according to encoder
+    public int targetLiftPosition = 0;//updates in if statement, DO NOT CHANGE
+
+
+
     @Override
 
     //Defines the motor
@@ -50,10 +56,20 @@ public class FieldCentric extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime();
         boolean sortActive = false;
 
+        //BRAKES
+        jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+
         // Setting Positions
         slide.setTargetPosition(0);
         slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slide.setPower(.8);
+
+//        jointMotor.setTargetPosition(targetLiftPosition);
+//        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        jointMotor.setPower(.8);
 
         // Gyroscope
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -78,6 +94,18 @@ public class FieldCentric extends LinearOpMode {
             driveGamepad.copy(gamepad1);
             manipulatorGamepad.copy(gamepad2);
 
+            //joint
+            jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            jointMotor.setTargetPosition(0);
+            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            jointMotor.setPower(.8);
+
+            if (manipulatorGamepad.dpad_up) {
+                targetLiftPosition = jointLiftUpPosition;
+            } else if (manipulatorGamepad.dpad_down) {
+                targetLiftPosition = jointLiftDownPosition;
+            }
             //
             // Drive
             //
@@ -126,7 +154,7 @@ public class FieldCentric extends LinearOpMode {
             // Arm Angle (Joint)
             //
 //            jointPose += (-manipulatorGamepad.right_stick_y * 10);
-            jointPose += -manipulatorGamepad.right_stick_y * .05;
+            jointPose += manipulatorGamepad.right_stick_y * .05;
 
 
             jointMotor.setTargetPosition(jointPose);
@@ -144,6 +172,11 @@ public class FieldCentric extends LinearOpMode {
             if (slidePose > 6100) {
                 slidePose = 6100;
             }
+
+            //Joint
+            telemetry.addData("jointM",jointMotor);
+           // telemetry.addData("jointP",jointPose);
+
             slide.setTargetPosition(slidePose);
             telemetry.addData("SlidePose",slidePose);
 
@@ -170,11 +203,11 @@ public class FieldCentric extends LinearOpMode {
             // Intake
             //
             if (manipulatorGamepad.left_trigger >= .9) {
-                intakeOne.setPower(-0.75);
+                intakeOne.setPower(0.75);
                 intakeTwo.setPower(-0.75);
             }
            if (manipulatorGamepad.right_trigger >= .9) {
-               intakeOne.setPower(0.75);
+               intakeOne.setPower(-0.75);
                intakeTwo.setPower(0.75);
            }
            //Emergency Stop
@@ -183,7 +216,7 @@ public class FieldCentric extends LinearOpMode {
                intakeTwo.setPower(0);
            }
            if (manipulatorGamepad.circle){ // for async
-               sortActive = !sortActive;
+               sortActive = false;
            }
 
            if (sortActive) {
