@@ -128,12 +128,7 @@ public class FieldCentric extends LinearOpMode {
 //            jointPose += (-manipulatorGamepad.right_stick_y * 10);
             jointPose += -manipulatorGamepad.right_stick_y * .05;
 
-            if (jointPose < -1000) {
-                jointPose = 0;
-            }
-            if (jointPose > 0) {
-                jointPose = 1;
-            }
+
             jointMotor.setTargetPosition(jointPose);
             telemetry.addData("Arm Pose: ", jointPose);
 
