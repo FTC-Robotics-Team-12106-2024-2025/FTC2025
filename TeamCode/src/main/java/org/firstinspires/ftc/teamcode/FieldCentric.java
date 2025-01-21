@@ -117,7 +117,7 @@ public class FieldCentric extends LinearOpMode {
 
         jointMotor.setTargetPosition(targetLiftPosition);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        jointMotor.setPower(.8);
+        jointMotor.setPower(1);
 
             if (manipulatorGamepad.dpad_up) {
                 targetLiftPosition = jointLiftUpPosition;
