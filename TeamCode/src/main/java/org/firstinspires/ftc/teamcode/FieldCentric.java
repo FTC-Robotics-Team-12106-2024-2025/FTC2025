@@ -189,7 +189,7 @@ public class FieldCentric extends LinearOpMode {
             }
 
             //Joint
-            telemetry.addData("jointP", jointPose);
+            telemetry.addData("jointP", Test);
 
             slide.setTargetPosition(slidePose);
             telemetry.addData("SlidePose: ", slidePose);
