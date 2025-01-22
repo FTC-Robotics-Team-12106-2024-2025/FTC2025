@@ -198,18 +198,12 @@ public class FieldCentric extends LinearOpMode {
             // Wrist
             //
             if (manipulatorGamepad.left_bumper) {
-                wristPose += 0.1f;
-            }
-            if (manipulatorGamepad.right_bumper) {
-                wristPose -= 0.1f;
-            }
-
-            if (wristPose < 0) {
-                wristPose = 0;
-            }
-            if (wristPose > 1) {
                 wristPose = 1;
             }
+            if (manipulatorGamepad.right_bumper) {
+                wristPose = 0;
+            }
+            wristPose = 0.5f;// needs to be changed
             wrist.setPosition(wristPose);
             telemetry.addData("WristPose",wristPose);
 
@@ -224,11 +218,8 @@ public class FieldCentric extends LinearOpMode {
                 intakeOne.setPower(0.75);
                 intakeTwo.setPower(-0.75);
             }
-            //Emergency Stop
-            if (manipulatorGamepad.options) {
-                intakeOne.setPower(0);
-                intakeTwo.setPower(0);
-            }
+            intakeOne.setPower(0);
+            intakeTwo.setPower(0);
             if (manipulatorGamepad.circle){ // for async
                 sortActive = !sortActive;
             }
