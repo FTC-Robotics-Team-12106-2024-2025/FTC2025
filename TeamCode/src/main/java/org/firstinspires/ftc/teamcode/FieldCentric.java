@@ -20,15 +20,15 @@ public class FieldCentric extends LinearOpMode {
 
      // Variables
 
-     public int armPose = 0;
-     public int slidePose = 0;
-     public float wristPose = 0;
+     public int armPos = 0;
+     public int slidePos = 0;
+     public float wristPose = 0.5f;
 
      int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
-     public int armUpPose = -450;//change this value according to encoder
-     public int armDownPose = -1550;//change this value according to encoder
-     public int targetArmPose = 0;//updates in if statement, DO NOT CHANGE
+     public int armUpPos = -718;//change this value according to encoder
+     public int armDownPos = -1550;//change this value according to encoder
+     public int targetArmPos = 0;//updates in if statement, DO NOT CHANGE
 
 
 
@@ -66,11 +66,11 @@ public class FieldCentric extends LinearOpMode {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        // Setting Positions
-//        slide.setTargetPosition(targetLiftPosition);
-//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        slide.setPower(.8);
-//
-        armMotor.setTargetPosition(targetArmPose);
+       slideMotor.setTargetPosition(slidePos);
+      slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       slideMotor.setPower(.8);
+
+        armMotor.setTargetPosition(targetArmPos);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor.setPower(.8);
 
@@ -157,42 +157,42 @@ public class FieldCentric extends LinearOpMode {
             // Arm Angle
             //
 
-            armPose += (-manipulatorGamepad.right_stick_y * 100);
+            armPos += (-manipulatorGamepad.right_stick_y * 100);
 
-            if (armPose > 0) {
-                armPose = 0;
+            if (armPos > 0) {
+                armPos = 0;
             }
-            if (armPose < -1570) {
-                armPose = -1570;
+            if (armPos < -1570) {
+                armPos = -1570;
             }
 
             if (manipulatorGamepad.dpad_up) {
-                armPose = armUpPose;
+                armPos = armUpPos;
 
             } else if (manipulatorGamepad.dpad_down) {
-                armPose = armDownPose;
+                armPos = armDownPos;
 
             }
 
-            armMotor.setTargetPosition(armPose);
-            telemetry.addData("Arm Angular Position: ", armPose);
+            armMotor.setTargetPosition(armPos);
+            telemetry.addData("Arm Angular Position: ", armPos);
 
 
             //
             // Linear Slide
             //
-            slidePose += (-manipulatorGamepad.left_stick_y * 100);
+            slidePos += (-manipulatorGamepad.left_stick_y * 100);
 
             // Limits
-            if (slidePose < 0) {
-                slidePose = 0;
+            if (slidePos < 0) {
+                slidePos = 0;
             }
-            if (slidePose > 6100) {
-                slidePose = 6100;
+            if (slidePos > 6100) {
+                slidePos = 6100;
             }
 
-            slideMotor.setTargetPosition(slidePose);
-            telemetry.addData("Slide Linear Position: ", slidePose);
+            slideMotor.setTargetPosition(slidePos);
+            telemetry.addData("Slide Linear Position: ", slidePos);
 
             //
             // Wrist
