@@ -22,7 +22,7 @@ public class FieldCentric extends LinearOpMode {
 
      public int armPos = 0;
      public int slidePos = 0;
-     public float wristPose = 0.5f;
+     public float wristPos = 0.5f;
 
      int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
@@ -111,8 +111,6 @@ public class FieldCentric extends LinearOpMode {
             //
             // Drive
             //
-            double wheelCPR = 423.2116; // Counts per revolution
-            double linearCPR = 72.1;
             float y = -driveGamepad.left_stick_y;
             float x = driveGamepad.left_stick_x;
             float slowX = driveGamepad.right_stick_x/4;
@@ -168,6 +166,7 @@ public class FieldCentric extends LinearOpMode {
 
             if (manipulatorGamepad.dpad_up) {
                 armPos = armUpPos;
+                wristPos = 0;
 
             } else if (manipulatorGamepad.dpad_down) {
                 armPos = armDownPos;
@@ -198,17 +197,17 @@ public class FieldCentric extends LinearOpMode {
             // Wrist
             //
             if (manipulatorGamepad.left_bumper) {
-                wristPose = 1;
+                wristPos = 1;
             }
             if (manipulatorGamepad.right_bumper) {
-                wristPose = 0;
+                wristPos = 0;
             }
             if (manipulatorGamepad.guide) {
-                wristPose = 0.5f;
+                wristPos = 0.5f;
             }
 
-            wristServo.setPosition(wristPose);
-            telemetry.addData("WristPose", wristPose);
+            wristServo.setPosition(wristPos);
+            telemetry.addData("WristPose", wristPos);
 
             //
             // Intake
