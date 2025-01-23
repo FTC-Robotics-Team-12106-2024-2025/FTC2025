@@ -23,8 +23,6 @@ public class FieldCentric extends LinearOpMode {
      public int armPose = 0;
      public int slidePose = 0;
      public float wristPose = 0;
-     public int Test;
-
 
      int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
@@ -63,9 +61,8 @@ public class FieldCentric extends LinearOpMode {
         //slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
        // jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-//slide
+        // Resetting encoders
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //joint
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        // Setting Positions
@@ -100,9 +97,6 @@ public class FieldCentric extends LinearOpMode {
             driveGamepad.copy(gamepad1);
             manipulatorGamepad.copy(gamepad2);
 
-            Test = armMotor.getCurrentPosition();
-
-
 //            jointMotor.setTargetPosition(0);
 //            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //            jointMotor.setPower(.8);
@@ -112,17 +106,7 @@ public class FieldCentric extends LinearOpMode {
 //        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        slide.setPower(.8);
 
-        armMotor.setTargetPosition(targetArmPose);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(1);
 
-            if (manipulatorGamepad.dpad_up) {
-                targetArmPose = armUpPose;
-
-            } else if (manipulatorGamepad.dpad_down) {
-                targetArmPose = armDownPose;
-
-            }
 
             //
             // Drive
@@ -182,6 +166,14 @@ public class FieldCentric extends LinearOpMode {
                 armPose = -1570;
             }
 
+            if (manipulatorGamepad.dpad_up) {
+                armPose = armUpPose;
+
+            } else if (manipulatorGamepad.dpad_down) {
+                armPose = armDownPose;
+
+            }
+
             armMotor.setTargetPosition(armPose);
             telemetry.addData("Arm Angular Position: ", armPose);
 
@@ -230,11 +222,12 @@ public class FieldCentric extends LinearOpMode {
                intakeTwo.setPower(-0.75);
            }
 
-           intakeOne.setPower(0);
-           intakeTwo.setPower(0);
+
+
 
            if (manipulatorGamepad.circle){ // for async
-               sortActive = false;
+               intakeOne.setPower(0);
+               intakeTwo.setPower(0);
            }
 
 //           if (sortActive) {
