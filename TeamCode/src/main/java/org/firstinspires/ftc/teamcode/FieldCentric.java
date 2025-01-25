@@ -28,7 +28,7 @@ public class FieldCentric extends LinearOpMode {
 
      int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
-     public int armUpPos = -718;//change this value according to encoder
+     public int armUpPos = -850;//change this value according to encoder
      public int armDownPos = -1800;//change this value according to encoder
      public int targetArmPos = 0;//updates in if statement, DO NOT CHANGE
 
@@ -157,7 +157,7 @@ public class FieldCentric extends LinearOpMode {
             // Arm Angle
             //
 
-            armPos += (-manipulatorGamepad.right_stick_y * 100);
+            armPos += (-manipulatorGamepad.right_stick_y * 50);
 
             if (armPos > 0) {
                 armPos = 0;
@@ -182,7 +182,7 @@ public class FieldCentric extends LinearOpMode {
             //
             // Linear Slide
             //
-            slidePos += (-manipulatorGamepad.left_stick_y * 100);
+            slidePos += (-manipulatorGamepad.left_stick_y * 50);
 
             // Limits
             if (slidePos < 0) {

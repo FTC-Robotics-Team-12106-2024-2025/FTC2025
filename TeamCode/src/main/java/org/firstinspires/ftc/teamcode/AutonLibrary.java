@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -16,12 +17,13 @@ public class AutonLibrary extends LinearOpMode {
     public DcMotor backLeft;
     public DcMotor backRight;
     public DcMotor slide;
-    public DcMotor jointMotor;
+    public DcMotor armMotor;
     public CRServo intakeOne;
     public CRServo intakeTwo;
     public ColorSensor color;
     public DistanceSensor colorDistance;
     public ElapsedTime timer;
+    public Servo wristServo;
 
 
     public void runOpMode() {
@@ -29,10 +31,9 @@ public class AutonLibrary extends LinearOpMode {
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
-        slide = hardwareMap.get(DcMotor.class, "leftSlide");
-        jointMotor = hardwareMap.get(DcMotor.class,"jointMotor");
+        slide = hardwareMap.get(DcMotor.class, "slide");
+        armMotor = hardwareMap.get(DcMotor.class,"armMotor");
         intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
-        intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
         int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
         String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
         int[][] sampleHave = {{211,41,37},{55,89,223},{241,178,14}};
@@ -83,11 +84,11 @@ public class AutonLibrary extends LinearOpMode {
          backRight.setPower(br);
    }
 
-   public final void linearVertical(int verticalPose) {
+   public final void linearVertical(int verticalPos) {
         slide.setTargetPosition(0);
         slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slide.setPower(0.65);
-        slide.setTargetPosition(verticalPose);
+        slide.setTargetPosition(verticalPos);
     }
 //I use one function for the entire intake code. Probably will change with color sensor
 public final void Intake(double intakeDir) {
@@ -291,13 +292,13 @@ public final void startSensor(boolean sortActive, int colorFilter) {
     //
 
 
-    public void jointPower(int tenths, int jointPose) {
+    public void armPower(int tenths, int armPos) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            jointMotor.setTargetPosition(jointPose);
+            armMotor.setTargetPosition(armPos);
         }
     }
 
