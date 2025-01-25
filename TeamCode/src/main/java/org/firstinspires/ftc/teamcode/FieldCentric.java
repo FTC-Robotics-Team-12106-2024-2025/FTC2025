@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 
 @TeleOp
 
@@ -221,7 +223,9 @@ public class FieldCentric extends LinearOpMode {
                intakeTwo.setPower(-0.75);
            }
 
-
+           if (manipulatorGamepad.options){
+               sortActive = !sortActive;
+           }
 
 
            if (manipulatorGamepad.circle){ // for async
@@ -229,43 +233,43 @@ public class FieldCentric extends LinearOpMode {
                intakeTwo.setPower(0);
            }
 
-//           if (sortActive) {
-//               manipulatorGamepad.setLedColor(sampleLook[colorFilter][0], sampleLook[colorFilter][1], sampleLook[colorFilter][2], 1000);
-//               intakeOne.setPower(-0.75);
-//               intakeTwo.setPower(-0.75); // powers might be wrong
-//               int red = thresholds[colorFilter][0];
-//               int blue = thresholds[colorFilter][1];
-//               int green = thresholds[colorFilter][2];
-//               if (colorDistance.getDistance(DistanceUnit.CM) < 2.0) {
-//                   intakeOne.setPower(0);
-//                   intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
-//                   if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10) {
-//                       driveGamepad.rumble(50);
-//                       manipulatorGamepad.rumble(50);
-//                       manipulatorGamepad.setLedColor(sampleHave[colorFilter][0], sampleHave[colorFilter][1], sampleHave[colorFilter][2], 1000);
-//                       sortActive = false;
-//                   } else {
-//                       timer.reset();// might reset too much
-//                       intakeOne.setPower(0.75);
-//                       intakeTwo.setPower(0.75);
-//                       if (timer.milliseconds() >= 500) { // might not resolve if it checks it immediately (checks right after timer is on and never flips direction)
-//                           intakeOne.setPower(-0.75);
-//                           intakeTwo.setPower(-0.75);
-//                       }
-//                   }
-//               }
-//           }
-//           //ColorSort
-//
-//           if (manipulatorGamepad.share) {
-//               colorFilter++;
-//               if (colorFilter > 2) {
-//                   colorFilter = 0;
-//               }
-//               telemetry.clearAll();// Updates which type of color sort it is; other info will be printed due to it being a while loop
-//               telemetry.addData(colorData[colorFilter], colorFilter);
-//               telemetry.update();
-//           }
+          if (sortActive) {
+               manipulatorGamepad.setLedColor(sampleLook[colorFilter][0], sampleLook[colorFilter][1], sampleLook[colorFilter][2], 1000);
+              intakeOne.setPower(-0.75);
+               intakeTwo.setPower(-0.75); // powers might be wrong
+              int red = thresholds[colorFilter][0];
+               int blue = thresholds[colorFilter][1];
+               int green = thresholds[colorFilter][2];
+               if (colorDistance.getDistance(DistanceUnit.CM) < 2.0) {
+                 intakeOne.setPower(0);
+                  intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
+                 if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10) {
+                      driveGamepad.rumble(50);
+                      manipulatorGamepad.rumble(50);
+                      manipulatorGamepad.setLedColor(sampleHave[colorFilter][0], sampleHave[colorFilter][1], sampleHave[colorFilter][2], 1000);
+                     sortActive = false;
+                  } else {
+                      timer.reset();// might reset too much
+                       intakeOne.setPower(0.75);
+                       intakeTwo.setPower(0.75);
+                      if (timer.milliseconds() >= 500) { // might not resolve if it checks it immediately (checks right after timer is on and never flips direction)
+                           intakeOne.setPower(-0.75);
+                          intakeTwo.setPower(-0.75);
+                      }
+                   }
+           }
+           }
+           //ColorSort
+
+           if (manipulatorGamepad.share) {
+               colorFilter++;
+               if (colorFilter > 2) {
+                  colorFilter = 0;
+               }
+               telemetry.clearAll();// Updates which type of color sort it is; other info will be printed due to it being a while loop
+               telemetry.addData(colorData[colorFilter], colorFilter);
+              telemetry.update();
+           }
 
             telemetry.addData("Red",color.red());
             telemetry.addData("Blue",color.blue());
