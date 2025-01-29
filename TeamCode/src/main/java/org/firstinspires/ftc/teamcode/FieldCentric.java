@@ -28,8 +28,10 @@ public class FieldCentric extends LinearOpMode {
 
      int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
-     public int armUpPos = -850;//change this value according to encoder
-     public int armDownPos = -1800;//change this value according to encoder
+     public int armUpPos = -718;//change this value according to encoder
+     public int armDownPos = -1550;//change this value according to encoder
+     public int armRightPos = 0;//change this value according to encoder
+     public int armLeftPos = 0;//change this value according to encoder
      public int targetArmPos = 0;//updates in if statement, DO NOT CHANGE
 
 
@@ -116,24 +118,30 @@ public class FieldCentric extends LinearOpMode {
             float y = -driveGamepad.left_stick_y;
             float x = driveGamepad.left_stick_x;
             float slowX = driveGamepad.right_stick_x/4;
+            double rotateRight = driveGamepad.right_trigger*.5;
+            double rotateLeft = driveGamepad.left_trigger*.5;
 
             if (driveGamepad.dpad_left) {
-                 x = -0.25f;
+                 x = -0.05f;
             }
             if (driveGamepad.dpad_right) {
-                 x = 0.25f;
+                 x = 0.05f;
             }
             if (driveGamepad.dpad_up) {
-                y = 0.25f;
+                y = 0.05f;
             }
             if (driveGamepad.dpad_down) {
-                 y = -0.25f;
+                 y = -0.05f;
+            }
+            if (driveGamepad.right_bumper) {
+                rotateRight = 0.05f;
+            }
+            if (driveGamepad.left_bumper) {
+                rotateLeft = 0.05f;
             }
 
             double currentHeading = -imu.getAngularOrientation().firstAngle;
 //          boolean honk = driveGamepad.left_stick_button;
-            double rotateRight = driveGamepad.right_trigger;
-            double rotateLeft = driveGamepad.left_trigger;
             double rx = rotateRight-rotateLeft+slowX;
             double xRot = x * Math.cos(currentHeading) - y * Math.sin(currentHeading);
             double yRot = y * Math.cos(currentHeading) + x * Math.sin(currentHeading);
@@ -157,15 +165,15 @@ public class FieldCentric extends LinearOpMode {
             // Arm Angle
             //
 
-            armPos += (-manipulatorGamepad.right_stick_y * 50);
-
+            //armPos += (-manipulatorGamepad.right_stick_y * 50);
+/*
             if (armPos > 0) {
                 armPos = 0;
             }
-            if (armPos < -1800) {
-                armPos = -1800;
+            if (armPos < -150) {
+                armPos = -150;
             }
-
+*/
             if (manipulatorGamepad.dpad_up) {
                 armPos = armUpPos;
                 wristPos = 0;
@@ -173,6 +181,10 @@ public class FieldCentric extends LinearOpMode {
             } else if (manipulatorGamepad.dpad_down) {
                 armPos = armDownPos;
 
+            } else if (manipulatorGamepad.dpad_right) {
+                armPos = armRightPos;
+            } else if (manipulatorGamepad.dpad_left) {
+                armPos = armLeftPos;
             }
 
             armMotor.setTargetPosition(armPos);
@@ -266,7 +278,6 @@ public class FieldCentric extends LinearOpMode {
                if (colorFilter > 2) {
                   colorFilter = 0;
                }
-               telemetry.clearAll();// Updates which type of color sort it is; other info will be printed due to it being a while loop
                telemetry.addData(colorData[colorFilter], colorFilter);
               telemetry.update();
            }
