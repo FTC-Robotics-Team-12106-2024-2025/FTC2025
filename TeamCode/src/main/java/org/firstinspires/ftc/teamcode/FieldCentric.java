@@ -11,28 +11,27 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp
 
 public class FieldCentric extends LinearOpMode {
-     Gamepad driveGamepad = new Gamepad();
-     Gamepad manipulatorGamepad = new Gamepad();
+    Gamepad driveGamepad = new Gamepad();
+    Gamepad manipulatorGamepad = new Gamepad();
 
-     // Variables
+    // Variables
 
-     public int armPos = 0;
-     public int slidePos = 0;
-     public float wristPos = 0.5f;
+    public int jointPose = 0;
+    public int slidePose = 0;
+    public float wristPose = 0;
+    public int Test;
 
-     int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
 
-     public int armUpPos = -718;//change this value according to encoder
-     public int armDownPos = -1550;//change this value according to encoder
-     public int armRightPos = 0;//change this value according to encoder
-     public int armLeftPos = 0;//change this value according to encoder
-     public int targetArmPos = 0;//updates in if statement, DO NOT CHANGE
+    int colorFilter = 0; // 0 = filter for red, 1 = for blue, 2 = for yellow
+
+    public int targetLiftPosition = 0;//updates in if statement, DO NOT CHANGE
 
 
 
@@ -41,16 +40,16 @@ public class FieldCentric extends LinearOpMode {
     //Defines the motor
     public void runOpMode() {
         // Drive Motors
-        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft"); // Port 0
+        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft"); //Port 0
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight"); //Port 1
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        DcMotor armMotor = hardwareMap.get(DcMotor.class,"armMotor");
-        DcMotor slideMotor = hardwareMap.get(DcMotor.class, "slide");
+        DcMotor armMotor = hardwareMap.get(DcMotor.class,"jointMotor");
+        DcMotor slide = hardwareMap.get(DcMotor.class, "slide");
         CRServo intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
         CRServo intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
-        Servo wristServo = hardwareMap.get(Servo.class,"wrist");
+        Servo wrist = hardwareMap.get(Servo.class,"wrist");
 
         ColorSensor color = hardwareMap.get(ColorSensor.class, "color");
         DistanceSensor colorDistance = hardwareMap.get(DistanceSensor.class, "color");
@@ -59,24 +58,25 @@ public class FieldCentric extends LinearOpMode {
 
         //BRAKES
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //encoders
         //slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       // jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Resetting encoders
-        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//slide
+        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //joint
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        // Setting Positions
-       slideMotor.setTargetPosition(slidePos);
-      slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       slideMotor.setPower(.8);
-
-        armMotor.setTargetPosition(targetArmPos);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(.8);
+//        slide.setTargetPosition(targetLiftPosition);
+//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        slide.setPower(.8);
+//
+//        jointMotor.setTargetPosition(targetLiftPosition);
+//        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        jointMotor.setPower(.8);
 
         // Gyroscope
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -95,11 +95,14 @@ public class FieldCentric extends LinearOpMode {
         if (isStopRequested()) {
             return;
         }
-        
+
         while (opModeIsActive()) {
             // Getting inputs
             driveGamepad.copy(gamepad1);
             manipulatorGamepad.copy(gamepad2);
+
+            Test = armMotor.getCurrentPosition();
+
 
 //            jointMotor.setTargetPosition(0);
 //            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -110,38 +113,44 @@ public class FieldCentric extends LinearOpMode {
 //        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        slide.setPower(.8);
 
+            armMotor.setTargetPosition(targetLiftPosition);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor.setPower(1);
 
+            if (manipulatorGamepad.dpad_up) {
+                targetLiftPosition = -450;
+
+            } else if (manipulatorGamepad.dpad_down) {
+                targetLiftPosition = -1550;
+
+            }
 
             //
             // Drive
             //
+            double wheelCPR = 423.2116; //Counts per revolution
+            double linearCPR = 72.1;
             float y = -driveGamepad.left_stick_y;
             float x = driveGamepad.left_stick_x;
-            float slowX = driveGamepad.right_stick_x/4;
-            double rotateRight = driveGamepad.right_trigger*.5;
-            double rotateLeft = driveGamepad.left_trigger*.5;
+            float slowX = driveGamepad.right_stick_x / 4;
 
             if (driveGamepad.dpad_left) {
-                 x = -0.05f;
+                x = -0.25f;
             }
             if (driveGamepad.dpad_right) {
-                 x = 0.05f;
+                x = 0.25f;
             }
             if (driveGamepad.dpad_up) {
-                y = 0.05f;
+                y = 0.25f;
             }
             if (driveGamepad.dpad_down) {
-                 y = -0.05f;
-            }
-            if (driveGamepad.right_bumper) {
-                rotateRight = 0.05f;
-            }
-            if (driveGamepad.left_bumper) {
-                rotateLeft = 0.05f;
+                y = -0.25f;
             }
 
             double currentHeading = -imu.getAngularOrientation().firstAngle;
 //          boolean honk = driveGamepad.left_stick_button;
+            double rotateRight = driveGamepad.right_trigger;
+            double rotateLeft = driveGamepad.left_trigger;
             double rx = rotateRight-rotateLeft+slowX;
             double xRot = x * Math.cos(currentHeading) - y * Math.sin(currentHeading);
             double yRot = y * Math.cos(currentHeading) + x * Math.sin(currentHeading);
@@ -157,130 +166,104 @@ public class FieldCentric extends LinearOpMode {
 
             //powers the motor for wheels
             frontLeft.setPower(fl / maxNumber * .7);
-            frontRight.setPower(fr / maxNumber * 7);
+            frontRight.setPower(fr / maxNumber * .7);
             backLeft.setPower(bl / maxNumber * .7);
             backRight.setPower(br / maxNumber * .7);
 
             //
-            // Arm Angle
+            // Arm Angle (Joint)
             //
-
-            //armPos += (-manipulatorGamepad.right_stick_y * 50);
-/*
-            if (armPos > 0) {
-                armPos = 0;
-            }
-            if (armPos < -150) {
-                armPos = -150;
-            }
-*/
-            if (manipulatorGamepad.dpad_up) {
-                armPos = armUpPos;
-                wristPos = 0;
-
-            } else if (manipulatorGamepad.dpad_down) {
-                armPos = armDownPos;
-
-            } else if (manipulatorGamepad.dpad_right) {
-                armPos = armRightPos;
-            } else if (manipulatorGamepad.dpad_left) {
-                armPos = armLeftPos;
-            }
-
-            armMotor.setTargetPosition(armPos);
-            telemetry.addData("Arm Angular Position: ", armPos);
 
 
             //
             // Linear Slide
             //
-            slidePos += (-manipulatorGamepad.left_stick_y * 50);
+            slidePose += (-manipulatorGamepad.left_stick_y * 100);
 
             // Limits
-            if (slidePos < 0) {
-                slidePos = 0;
+            if (slidePose < 0) {
+                slidePose = 0;
             }
-            if (slidePos > 6100) {
-                slidePos = 6100;
+            if (slidePose > 6100) {
+                slidePose = 6100;
             }
 
-            slideMotor.setTargetPosition(slidePos);
-            telemetry.addData("Slide Linear Position: ", slidePos);
+            //Joint
+            telemetry.addData("jointP", Test);
+
+            slide.setTargetPosition(slidePose);
+            telemetry.addData("SlidePose: ", slidePose);
 
             //
             // Wrist
             //
             if (manipulatorGamepad.left_bumper) {
-                wristPos = 1;
+                wristPose = 1;
             }
             if (manipulatorGamepad.right_bumper) {
-                wristPos = 0;
+                wristPose = 0;
             }
-            if (manipulatorGamepad.guide) {
-                wristPos = 0.5f;
-            }
-
-            wristServo.setPosition(wristPos);
-            telemetry.addData("WristPose", wristPos);
+            wristPose = 0.5f;// needs to be changed
+            wrist.setPosition(wristPose);
+            telemetry.addData("WristPose",wristPose);
 
             //
             // Intake
             //
-            if (manipulatorGamepad.left_trigger >= .9) {
+            if (manipulatorGamepad.left_trigger >= .9) {// out
                 intakeOne.setPower(-0.75);
                 intakeTwo.setPower(0.75);
             }
-           if (manipulatorGamepad.right_trigger >= .9) {
-               intakeOne.setPower(0.75);
-               intakeTwo.setPower(-0.75);
-           }
+            if (manipulatorGamepad.right_trigger >= .9) {// in
+                intakeOne.setPower(0.75);
+                intakeTwo.setPower(-0.75);
+            }
 
-           if (manipulatorGamepad.options){
-               sortActive = !sortActive;
-           }
+            if (manipulatorGamepad.circle){ // for async
+                sortActive = !sortActive;
+            }
+            if (manipulatorGamepad.triangle) {
+                intakeOne.setPower(0);
+                intakeTwo.setPower(0);
+            }
 
+            if (sortActive) {
+                manipulatorGamepad.setLedColor(sampleLook[colorFilter][0], sampleLook[colorFilter][1], sampleLook[colorFilter][2], 1000);
+                intakeOne.setPower(0.75);
+                intakeTwo.setPower(-0.75); // powers might be wrong
+                int red = thresholds[colorFilter][0];
+                int blue = thresholds[colorFilter][1];
+                int green = thresholds[colorFilter][2];
+                if (colorDistance.getDistance(DistanceUnit.CM) < 2.0) {
+                    intakeOne.setPower(0);
+                    intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
+                    if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10) {
+                        driveGamepad.rumble(50);
+                        manipulatorGamepad.rumble(50);
+                        manipulatorGamepad.setLedColor(sampleHave[colorFilter][0], sampleHave[colorFilter][1], sampleHave[colorFilter][2], 1000);
+                        sortActive = false;
+                    } else {
+                        timer.reset();// might reset too much
+                        intakeOne.setPower(-0.75);
+                        intakeTwo.setPower(0.75);
+                        if (timer.milliseconds() >= 500) { // might not resolve if it checks it immediately (checks right after timer is on and never flips direction)
+                            intakeOne.setPower(0.75);
+                            intakeTwo.setPower(-0.75);
+                        }
+                    }
+                }
+            }
+            //ColorSort
 
-           if (manipulatorGamepad.circle){ // for async
-               intakeOne.setPower(0);
-               intakeTwo.setPower(0);
-           }
-
-          if (sortActive) {
-               manipulatorGamepad.setLedColor(sampleLook[colorFilter][0], sampleLook[colorFilter][1], sampleLook[colorFilter][2], 1000);
-              intakeOne.setPower(-0.75);
-               intakeTwo.setPower(-0.75); // powers might be wrong
-              int red = thresholds[colorFilter][0];
-               int blue = thresholds[colorFilter][1];
-               int green = thresholds[colorFilter][2];
-               if (colorDistance.getDistance(DistanceUnit.CM) < 2.0) {
-                 intakeOne.setPower(0);
-                  intakeTwo.setPower(0);           // tolerance of 10 (can be changed)
-                 if (Math.abs(color.red() - red) < 10 && Math.abs(color.blue() - blue) < 10 && Math.abs(color.green() - green) < 10) {
-                      driveGamepad.rumble(50);
-                      manipulatorGamepad.rumble(50);
-                      manipulatorGamepad.setLedColor(sampleHave[colorFilter][0], sampleHave[colorFilter][1], sampleHave[colorFilter][2], 1000);
-                     sortActive = false;
-                  } else {
-                      timer.reset();// might reset too much
-                       intakeOne.setPower(0.75);
-                       intakeTwo.setPower(0.75);
-                      if (timer.milliseconds() >= 500) { // might not resolve if it checks it immediately (checks right after timer is on and never flips direction)
-                           intakeOne.setPower(-0.75);
-                          intakeTwo.setPower(-0.75);
-                      }
-                   }
-           }
-           }
-           //ColorSort
-
-           if (manipulatorGamepad.share) {
-               colorFilter++;
-               if (colorFilter > 2) {
-                  colorFilter = 0;
-               }
-               telemetry.addData(colorData[colorFilter], colorFilter);
-              telemetry.update();
-           }
+            if (manipulatorGamepad.share) {
+                colorFilter++;
+                if (colorFilter > 2) {
+                    colorFilter = 0;
+                }
+                telemetry.clearAll();// Updates which type of color sort it is; other info will be printed due to it being a while loop
+                telemetry.addData(colorData[colorFilter], colorFilter);
+                telemetry.update();
+            }
 
             telemetry.addData("Red",color.red());
             telemetry.addData("Blue",color.blue());
@@ -289,6 +272,3 @@ public class FieldCentric extends LinearOpMode {
         }
     }
 }
-
-
-
