@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static com.sun.tools.doclint.Entity.pi;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 
 // Strafe 20 for half a tile, 40 for a tile
 
@@ -32,12 +35,18 @@ public class AutonLibrary extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         slide = hardwareMap.get(DcMotor.class, "slide");
-        armMotor = hardwareMap.get(DcMotor.class,"armMotor");
+        armMotor = hardwareMap.get(DcMotor.class,"jointMotor");
         intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
+        intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
+
         int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
         String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
         int[][] sampleHave = {{211,41,37},{55,89,223},{241,178,14}};
         int[][] sampleLook = {{233,141,138},{155,172,239},{246, 217, 135}};
+
+        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         waitForStart();
 
         autonCommands();
@@ -191,6 +200,19 @@ public final void startSensor(boolean sortActive, int colorFilter) {
                 turn(false,true);
         }
     }
+    /*
+    public final void turn(double degrees, boolean turnLeft,int rpm ) {
+        double turnCirc = Math.PI *(14*25.4);
+        double arcLen = (degrees/360) * turnCirc;
+        double rotations = arcLen/104;
+        double ticks = Math.round(rotations*(28/15));
+        if (turnLeft) {
+            ticks = -ticks;
+        }
+
+
+    }
+    */
     public final void killSwitch(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
@@ -292,14 +314,24 @@ public final void startSensor(boolean sortActive, int colorFilter) {
     //
 
 
-    public void armPower(int tenths, int armPos) {
+    public void armUp(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
         long stop = (durationSucks + tenths*100);
         while (System. currentTimeMillis() < stop) {
-            armMotor.setTargetPosition(armPos);
+            armMotor.setTargetPosition(-450);
         }
     }
+    public void armDown(int tenths) {
+        //sets current time
+        long durationSucks = System.currentTimeMillis();
+        //stops current time
+        long stop = (durationSucks + tenths*100);
+        while (System. currentTimeMillis() < stop) {
+            armMotor.setTargetPosition(-1550);
+        }
+    }
+
 
 }

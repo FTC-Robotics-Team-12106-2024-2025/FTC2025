@@ -7,7 +7,7 @@ public class AutonParkRightV1 extends AutonLibrary {
 
     @Override
     public void autonCommands() {
-        strafeRight(50);
+        strafeRight(30);
         killSwitch(10);
 
     }

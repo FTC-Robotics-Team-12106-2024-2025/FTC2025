@@ -70,10 +70,10 @@ public class FieldCentric extends LinearOpMode {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        // Setting Positions
-//        slide.setTargetPosition(targetLiftPosition);
-//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        slide.setPower(.8);
-//
+        slide.setTargetPosition(slidePose);
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slide.setPower(.8);
+
 //        jointMotor.setTargetPosition(targetLiftPosition);
 //        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        jointMotor.setPower(.8);
@@ -100,8 +100,6 @@ public class FieldCentric extends LinearOpMode {
             // Getting inputs
             driveGamepad.copy(gamepad1);
             manipulatorGamepad.copy(gamepad2);
-
-            Test = armMotor.getCurrentPosition();
 
 
 //            jointMotor.setTargetPosition(0);
@@ -187,9 +185,6 @@ public class FieldCentric extends LinearOpMode {
             if (slidePose > 6100) {
                 slidePose = 6100;
             }
-
-            //Joint
-            telemetry.addData("jointP", Test);
 
             slide.setTargetPosition(slidePose);
             telemetry.addData("SlidePose: ", slidePose);
