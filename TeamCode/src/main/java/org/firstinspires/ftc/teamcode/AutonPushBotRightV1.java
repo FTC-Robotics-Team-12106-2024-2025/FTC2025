@@ -7,12 +7,13 @@ public class AutonPushBotRightV1 extends AutonLibrary {
     @Override
     public void autonCommands() {
         strafeRight(20);
-        moveForward(80);
+        moveForward(30);
         for (int i = 0; i < 2; i++ ) {
             strafeRight(7);
-            moveBackward(80);
-            moveForward(80);
+            moveBackward(30);
+            if (i < 1)
+                moveForward(30);
         }
-        strafeLeft(40);
+
     }
 }

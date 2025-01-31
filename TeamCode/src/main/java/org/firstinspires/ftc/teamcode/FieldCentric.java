@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
@@ -119,7 +118,7 @@ public class FieldCentric extends LinearOpMode {
                 targetLiftPosition = -450;
 
             } else if (manipulatorGamepad.dpad_down) {
-                targetLiftPosition = -1550;
+                targetLiftPosition = -1650;
 
             }
 
