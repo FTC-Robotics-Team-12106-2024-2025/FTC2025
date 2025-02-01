@@ -73,6 +73,10 @@ public class AutonLibrary extends LinearOpMode {
 
     public final void resetOdom() {
         while (currentHeading != 0) {
+            if (isStopRequested()) {
+                stop();
+            }
+
             if (currentHeading > 0) {
                 frontLeft.setPower(.5);
                 frontRight.setPower(.5);

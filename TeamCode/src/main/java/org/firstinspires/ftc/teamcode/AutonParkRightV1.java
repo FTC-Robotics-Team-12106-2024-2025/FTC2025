@@ -9,7 +9,7 @@ public class AutonParkRightV1 extends AutonLibrary {
     public void autonCommands() {
         wristHalf(1);
         strafeRight(30);
-        resetOdom();
+//        resetOdom();
         killSwitch(10);
 
     }
