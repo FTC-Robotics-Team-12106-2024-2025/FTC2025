@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static com.sun.tools.doclint.Entity.pi;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 
 
 // Strafe 20 for half a tile, 40 for a tile
@@ -26,7 +25,7 @@ public class AutonLibrary extends LinearOpMode {
     public ColorSensor color;
     public DistanceSensor colorDistance;
     public ElapsedTime timer;
-    public Servo wristServo;
+    public Servo wrist;
 
 
     public void runOpMode() {
@@ -38,14 +37,17 @@ public class AutonLibrary extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotor.class,"jointMotor");
         intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
         intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
+        wrist = hardwareMap.get(Servo.class,"wrist");
 
         int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
         String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
         int[][] sampleHave = {{211,41,37},{55,89,223},{241,178,14}};
         int[][] sampleLook = {{233,141,138},{155,172,239},{246, 217, 135}};
-
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         waitForStart();
 
@@ -99,10 +101,21 @@ public class AutonLibrary extends LinearOpMode {
         slide.setPower(0.65);
         slide.setTargetPosition(verticalPos);
     }
+    //ARM FINALLY WORKS, LESSG OOOOO
+    public final void armMove (int armPos) {
+        armMotor.setTargetPosition(0);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
+        armMotor.setTargetPosition(armPos);
+    }
 //I use one function for the entire intake code. Probably will change with color sensor
 public final void Intake(double intakeDir) {
         intakeOne.setPower(intakeDir);
         intakeTwo.setPower(intakeDir);
+}
+//Wrist controls
+public final void wrist(double wristPose) {
+        wrist.setPosition(wristPose);
 }
 //sets the color of the sensor
 
@@ -153,7 +166,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + tenths*100);
+            long stop = (durationSucks + tenths*100);//tenths of a second
             while (System. currentTimeMillis() < stop) {
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(0,-0.5);
@@ -166,7 +179,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + tenths*100);
+            long stop = (durationSucks + tenths*100);//tenths of a second
             while (System. currentTimeMillis() < stop) {
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(0.5,0);
@@ -176,7 +189,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + tenths*100);
+            long stop = (durationSucks + tenths*100);//tenths of a second
                 while (System. currentTimeMillis() < stop) {
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(-0.5,0);
@@ -186,7 +199,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + tenths*100);
+            long stop = (durationSucks + tenths*100);//tenths of a second
                 while (System. currentTimeMillis() < stop) {
                 turn(true,false);
         }
@@ -195,7 +208,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             //sets current time
             long durationSucks = System.currentTimeMillis();
             //stops current time
-            long stop = (durationSucks + tenths*100);
+            long stop = (durationSucks + tenths*100);//tenths of a second
                 while (System. currentTimeMillis() < stop) {
                 turn(false,true);
         }
@@ -217,41 +230,44 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
             moveWheel(0,0);
+            Intake(0);
+
+
         }
     }
 
     //
     //Intake Code ig, pretty self explanatory
     //
-    public final void intakeIn(int tenths) {
+    public void intakeIn(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
             Intake(-0.75);
         }
     }
-    public final void intakeOut(int tenths) {
+    public void intakeOut(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
             Intake(0.75);
         }
     }
-    public final void intakeStop(int tenths) {
+    public void intakeStop(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
             Intake(0);
@@ -267,7 +283,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             linearVertical(0);
         }
@@ -276,7 +292,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             linearVertical(1525);
         }
@@ -285,7 +301,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             linearVertical(3050);
         }
@@ -294,7 +310,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             linearVertical(4575);
         }
@@ -303,7 +319,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             linearVertical(6100);
         }
@@ -318,18 +334,53 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
-            armMotor.setTargetPosition(-450);
+            armMove(-750);
+            intakeIn(tenths);
         }
     }
     public void armDown(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100);
+        long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
-            armMotor.setTargetPosition(-1550);
+            armMove(-1650);
+        }
+    }
+    //
+    //Wrist
+    //
+    public void wristZero(int tenths) {
+        //sets current time
+        long durationSucks = System.currentTimeMillis();
+        //stops current time
+        long stop = (durationSucks + tenths*100); //tenths of a second
+        while (System. currentTimeMillis() < stop) {
+            wrist(0);
+        }
+    }
+
+    public void wristFull(int tenths) {
+        long durationSucks = System.currentTimeMillis();
+        long stop = (durationSucks + tenths*100); //tenths of a second
+        while (System. currentTimeMillis() < stop) {
+            wrist(1);
+        }
+    }
+    public void wristHalf(int tenths) {
+        long durationSucks = System.currentTimeMillis();
+        long stop = (durationSucks + tenths*100); //tenths of a second
+        while (System. currentTimeMillis() < stop) {
+            wrist(0.5);
+        }
+    }
+    public void wristThreeQuarts(int tenths) {
+        long durationSucks = System.currentTimeMillis();
+        long stop = (durationSucks + tenths*100); //tenths of a second
+        while (System. currentTimeMillis() < stop) {
+            wrist(0.75);
         }
     }
 

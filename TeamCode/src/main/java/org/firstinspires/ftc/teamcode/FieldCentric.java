@@ -115,7 +115,7 @@ public class FieldCentric extends LinearOpMode {
             armMotor.setPower(1);
 
             if (manipulatorGamepad.dpad_up) {
-                targetLiftPosition = -450;
+                targetLiftPosition = -775;
 
             } else if (manipulatorGamepad.dpad_down) {
                 targetLiftPosition = -1650;
@@ -197,7 +197,10 @@ public class FieldCentric extends LinearOpMode {
             if (manipulatorGamepad.right_bumper) {
                 wristPose = 0;
             }
-            wristPose = 0.5f;// needs to be changed
+            if (!manipulatorGamepad.left_bumper && !manipulatorGamepad.right_bumper) {
+                wristPose = 0.5f;
+            }
+            // needs to be changed
             wrist.setPosition(wristPose);
             telemetry.addData("WristPose",wristPose);
 
@@ -215,6 +218,8 @@ public class FieldCentric extends LinearOpMode {
 
             if (manipulatorGamepad.circle){ // for async
                 sortActive = !sortActive;
+                intakeOne.setPower(0);
+                intakeTwo.setPower(0);
             }
             if (manipulatorGamepad.triangle) {
                 intakeOne.setPower(0);
@@ -262,6 +267,7 @@ public class FieldCentric extends LinearOpMode {
             telemetry.addData("Red",color.red());
             telemetry.addData("Blue",color.blue());
             telemetry.addData("Green",color.green());
+            telemetry.addData("sortActive",sortActive);
             telemetry.update();
         }
     }

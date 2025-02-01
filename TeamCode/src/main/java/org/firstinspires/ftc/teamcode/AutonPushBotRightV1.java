@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class AutonPushBotRightV1 extends AutonLibrary {
     @Override
     public void autonCommands() {
+        wristHalf(1);
         strafeRight(20);
         moveForward(30);
         for (int i = 0; i < 2; i++ ) {

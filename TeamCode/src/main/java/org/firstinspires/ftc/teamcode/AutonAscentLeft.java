@@ -7,6 +7,7 @@ public class AutonAscentLeft extends AutonLibrary {
 
     @Override
     public void autonCommands() {
+        wristHalf(1);
         strafeLeft(13);
         moveForward(15);
         rotateRight(2);
