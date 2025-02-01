@@ -8,7 +8,7 @@ public class AutonSpecimenLeft extends AutonLibrary {
     @Override
     public void autonCommands() {
         wristHalf(1);
-        moveForward(1);
+        moveForward(2);
         armDown(10);
 
 

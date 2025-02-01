@@ -336,7 +336,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
-            armMove(-750);
+            armMove(-775);
             intakeIn(tenths);
         }
     }
