@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import com.qualcomm.hardware.bosch.BNO055IMU;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
@@ -94,36 +94,50 @@ public class AutonLibrary extends LinearOpMode {
 
     public final void moveWheel(double x,double y) {
         double currentHeading = -imu.getAngularOrientation().firstAngle;
-        double xRot = x * Math.cos(currentHeading) - y * Math.sin(currentHeading);
-        double yRot = y * Math.cos(currentHeading) + x * Math.sin(currentHeading);
 
-         double fl = (yRot+xRot);
-         double fr = (xRot-yRot);
-         double bl = (yRot-xRot);
-         double br = (-yRot-xRot);
+        while (true) {// imu is counterclockwise
+            if (isStopRequested()) {
+                stop();
+            }
 
-        //stops it from going greater than 1/-1
-         double maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
+            double xRot = x * Math.cos(currentHeading) - y * Math.sin(currentHeading);
+            double yRot = y * Math.cos(currentHeading) + x * Math.sin(currentHeading);
+            double rx = 0;
+            double check = -imu.getAngularOrientation().firstAngle;
+            if (check != currentHeading) {
+                if (check > currentHeading) {
+                    rx += 0.05;
+                }
+                if (check < currentHeading) {
+                    rx -= 0.05;
+                }
+            }
+            double fl = (yRot + xRot + rx);
+            double fr = (xRot - yRot + rx);
+            double bl = (yRot - xRot + rx);
+            double br = (-yRot - xRot + rx);
 
-         //powers the motor for wheels
-        frontLeft.setPower(fl/maxNumber);
-        frontRight.setPower(fr/maxNumber);
-        backLeft.setPower(bl/maxNumber);
-        backRight.setPower(br/maxNumber); 
-        //Should do telemetery dataz thingy I hate this.
+            //stops it from going greater than 1/-1
+            double maxNumber = Math.max(Math.abs(x) + Math.abs(y), 1);
 
+            //powers the motor for wheels
+            frontLeft.setPower(fl / maxNumber);
+            frontRight.setPower(fr / maxNumber);
+            backLeft.setPower(bl / maxNumber);
+            backRight.setPower(br / maxNumber);
+            //Should do telemetery dataz thingy I hate this.
+        }
     }
-   public final void turn(boolean rotateLeft, boolean rotateRight) {
+
+    public final void turn(boolean rotateRight) {
         double fl, fr, bl, br;
 
-        fl = fr = bl = br = 0;
         if (rotateRight) {
             fl = 0.5;
             fr = 0.5;
             bl = 0.5;
             br = 0.5;
-         }
-         if (rotateLeft) {
+         } else {
              fl = -0.5;
              fr = -0.5;
              bl = -0.5;
@@ -199,6 +213,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         long stop = (durationSucks + tenths*100); //Im using tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
+            if (isStopRequested()) {
+                stop();
+            }
             moveWheel(0,0.5);
         }
     }
@@ -208,6 +225,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             //stops current time
             long stop = (durationSucks + tenths*100);//tenths of a second
             while (System. currentTimeMillis() < stop) {
+                if (isStopRequested()) {
+                    stop();
+                }
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(0,-0.5);
         }
@@ -221,6 +241,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             //stops current time
             long stop = (durationSucks + tenths*100);//tenths of a second
             while (System. currentTimeMillis() < stop) {
+                if (isStopRequested()) {
+                    stop();
+                }
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(0.5,0);
         }
@@ -230,7 +253,10 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             long durationSucks = System.currentTimeMillis();
             //stops current time
             long stop = (durationSucks + tenths*100);//tenths of a second
-                while (System. currentTimeMillis() < stop) {
+        while (System.currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
                 //not even sure if this works or not. We can test it anyway
                 moveWheel(-0.5,0);
         }
@@ -240,8 +266,11 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             long durationSucks = System.currentTimeMillis();
             //stops current time
             long stop = (durationSucks + tenths*100);//tenths of a second
-                while (System. currentTimeMillis() < stop) {
-                turn(true,false);
+           while (System.currentTimeMillis() < stop) {
+               if (isStopRequested()) {
+                   stop();
+               }
+               turn(false);
         }
     }
     public final void rotateRight(int tenths) {
@@ -249,8 +278,11 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             long durationSucks = System.currentTimeMillis();
             //stops current time
             long stop = (durationSucks + tenths*100);//tenths of a second
-                while (System. currentTimeMillis() < stop) {
-                turn(false,true);
+        while (System.currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
+            turn(true);
         }
     }
     /*
@@ -273,6 +305,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
+            if (isStopRequested()) {
+                stop();
+            }
             moveWheel(0,0);
             Intake(0);
 
@@ -290,6 +325,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
+            if (isStopRequested()) {
+                stop();
+            }
             Intake(-0.75);
         }
     }
@@ -300,6 +338,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
+            if (isStopRequested()) {
+                stop();
+            }
             Intake(0.75);
         }
     }
@@ -310,6 +351,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
+            if (isStopRequested()) {
+                stop();
+            }
             Intake(0);
         }
     }
@@ -325,6 +369,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             linearVertical(0);
         }
     }
@@ -334,6 +381,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             linearVertical(1525);
         }
     }
@@ -343,6 +393,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             linearVertical(3050);
         }
     }
@@ -352,6 +405,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             linearVertical(4575);
         }
     }
@@ -361,6 +417,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             linearVertical(6100);
         }
     }
@@ -376,6 +435,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             armMove(-775);
             intakeIn(tenths);
         }
@@ -386,6 +448,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100);//tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             armMove(-1650);
         }
     }
@@ -398,6 +463,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //stops current time
         long stop = (durationSucks + tenths*100); //tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             wrist(0);
         }
     }
@@ -406,6 +474,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         long durationSucks = System.currentTimeMillis();
         long stop = (durationSucks + tenths*100); //tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             wrist(1);
         }
     }
@@ -413,6 +484,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         long durationSucks = System.currentTimeMillis();
         long stop = (durationSucks + tenths*100); //tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             wrist(0.5);
         }
     }
@@ -420,6 +494,9 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         long durationSucks = System.currentTimeMillis();
         long stop = (durationSucks + tenths*100); //tenths of a second
         while (System. currentTimeMillis() < stop) {
+            if (isStopRequested()) {
+                stop();
+            }
             wrist(0.75);
         }
     }
