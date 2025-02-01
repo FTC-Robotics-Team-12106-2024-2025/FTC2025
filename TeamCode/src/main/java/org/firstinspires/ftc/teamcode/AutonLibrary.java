@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 // Strafe 20 for half a tile, 40 for a tile
@@ -26,9 +27,15 @@ public class AutonLibrary extends LinearOpMode {
     public DistanceSensor colorDistance;
     public ElapsedTime timer;
     public Servo wrist;
+    public BNO055IMU imu;
+
+    public double currentHeading;
 
 
     public void runOpMode() {
+        //
+        // Initializing
+        //
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
@@ -48,8 +55,14 @@ public class AutonLibrary extends LinearOpMode {
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
 
         waitForStart();
+
+        currentHeading = -imu.getAngularOrientation().firstAngle;
 
         autonCommands();
     }
@@ -58,13 +71,36 @@ public class AutonLibrary extends LinearOpMode {
 
     }
 
+    public final void resetOdom() {
+        while (currentHeading != 0) {
+            if (currentHeading > 0) {
+                frontLeft.setPower(.5);
+                frontRight.setPower(.5);
+                backLeft.setPower(.5);
+                backRight.setPower(.5);
+            } else {
+                frontLeft.setPower(-.5);
+                frontRight.setPower(-.5);
+                backLeft.setPower(-.5);
+                backRight.setPower(-.5);
+            }
+            currentHeading = -imu.getAngularOrientation().firstAngle;
+        }
+    }
+
     public final void moveWheel(double x,double y) {
-         double fl = (y+x);
-         double fr = (x-y);
-         double bl = (y-x);
-         double br = (-y-x);
+        double currentHeading = -imu.getAngularOrientation().firstAngle;
+        double xRot = x * Math.cos(currentHeading) - y * Math.sin(currentHeading);
+        double yRot = y * Math.cos(currentHeading) + x * Math.sin(currentHeading);
+
+         double fl = (yRot+xRot);
+         double fr = (xRot-yRot);
+         double bl = (yRot-xRot);
+         double br = (-yRot-xRot);
+
         //stops it from going greater than 1/-1
          double maxNumber = Math.max(Math.abs(x)+Math.abs(y),1);
+
          //powers the motor for wheels
         frontLeft.setPower(fl/maxNumber);
         frontRight.setPower(fr/maxNumber);
