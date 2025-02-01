@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-
 // Strafe 20 for half a tile, 40 for a tile
 
 public class AutonLibrary extends LinearOpMode {
