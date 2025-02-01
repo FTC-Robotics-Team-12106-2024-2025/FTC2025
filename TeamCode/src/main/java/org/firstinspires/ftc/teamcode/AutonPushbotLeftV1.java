@@ -7,6 +7,7 @@ public class AutonPushbotLeftV1 extends AutonLibrary {
 
     @Override
     public void autonCommands() {
+        wristHalf(1);
         strafeLeft(20);
         moveForward(80);
         for (int i = 0; i < 2; i++) {

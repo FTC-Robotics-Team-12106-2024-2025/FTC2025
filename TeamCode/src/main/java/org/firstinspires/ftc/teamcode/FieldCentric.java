@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
@@ -70,10 +69,10 @@ public class FieldCentric extends LinearOpMode {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        // Setting Positions
-//        slide.setTargetPosition(targetLiftPosition);
-//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        slide.setPower(.8);
-//
+        slide.setTargetPosition(slidePose);
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slide.setPower(.8);
+
 //        jointMotor.setTargetPosition(targetLiftPosition);
 //        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        jointMotor.setPower(.8);
@@ -101,8 +100,6 @@ public class FieldCentric extends LinearOpMode {
             driveGamepad.copy(gamepad1);
             manipulatorGamepad.copy(gamepad2);
 
-            Test = armMotor.getCurrentPosition();
-
 
 //            jointMotor.setTargetPosition(0);
 //            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -118,10 +115,10 @@ public class FieldCentric extends LinearOpMode {
             armMotor.setPower(1);
 
             if (manipulatorGamepad.dpad_up) {
-                targetLiftPosition = -450;
+                targetLiftPosition = -775;
 
             } else if (manipulatorGamepad.dpad_down) {
-                targetLiftPosition = -1550;
+                targetLiftPosition = -1650;
 
             }
 
@@ -188,9 +185,6 @@ public class FieldCentric extends LinearOpMode {
                 slidePose = 6100;
             }
 
-            //Joint
-            telemetry.addData("jointP", Test);
-
             slide.setTargetPosition(slidePose);
             telemetry.addData("SlidePose: ", slidePose);
 
@@ -203,7 +197,10 @@ public class FieldCentric extends LinearOpMode {
             if (manipulatorGamepad.right_bumper) {
                 wristPose = 0;
             }
-            wristPose = 0.5f;// needs to be changed
+            if (!manipulatorGamepad.left_bumper && !manipulatorGamepad.right_bumper) {
+                wristPose = 0.5f;
+            }
+            // needs to be changed
             wrist.setPosition(wristPose);
             telemetry.addData("WristPose",wristPose);
 
@@ -218,10 +215,15 @@ public class FieldCentric extends LinearOpMode {
                 intakeOne.setPower(0.75);
                 intakeTwo.setPower(-0.75);
             }
-            intakeOne.setPower(0);
-            intakeTwo.setPower(0);
+
             if (manipulatorGamepad.circle){ // for async
                 sortActive = !sortActive;
+                intakeOne.setPower(0);
+                intakeTwo.setPower(0);
+            }
+            if (manipulatorGamepad.triangle) {
+                intakeOne.setPower(0);
+                intakeTwo.setPower(0);
             }
 
             if (sortActive) {
@@ -265,6 +267,7 @@ public class FieldCentric extends LinearOpMode {
             telemetry.addData("Red",color.red());
             telemetry.addData("Blue",color.blue());
             telemetry.addData("Green",color.green());
+            telemetry.addData("sortActive",sortActive);
             telemetry.update();
         }
     }
