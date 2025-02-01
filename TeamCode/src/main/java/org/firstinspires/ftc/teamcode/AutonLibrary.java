@@ -104,12 +104,13 @@ public class AutonLibrary extends LinearOpMode {
             double rx = 0;
             double check = -imu.getAngularOrientation().firstAngle;
             if (check != currentHeading) {
-                if (check > currentHeading) {
+                if ((check - currentHeading) > 5) {
                     rx += 0.05;
                 }
-                if (check < currentHeading) {
+                if ((check - currentHeading) < 5) {
                     rx -= 0.05;
                 }
+
             }
             double fl = (yRot + xRot + rx);
             double fr = (xRot - yRot + rx);
