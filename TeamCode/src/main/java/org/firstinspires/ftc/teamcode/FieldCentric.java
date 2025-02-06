@@ -82,7 +82,8 @@ public class FieldCentric extends LinearOpMode {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
-
+        //REALLY STUPID IDEA NO IDEA IF IT EVEN WORKS I CAN HOPE TO GOD IT DOES THOUGH
+        double currentHeading = new AutonLibrary().currentHeading;//-imu.getAngularOrientation().firstAngle;
         //All arrays based off the colorFilter variable
         int[][] thresholds = {{130,40,40},{30,50,40},{170,60,100}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
         String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
@@ -112,13 +113,13 @@ public class FieldCentric extends LinearOpMode {
 
             armMotor.setTargetPosition(targetLiftPosition);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armMotor.setPower(1);
+            armMotor.setPower(0.8);
 
             if (manipulatorGamepad.dpad_up) {
-                targetLiftPosition = -775;
+                targetLiftPosition =  -775; //206
 
             } else if (manipulatorGamepad.dpad_down) {
-                targetLiftPosition = -1650;
+                targetLiftPosition = -1650;//439
 
             }
 
@@ -144,7 +145,7 @@ public class FieldCentric extends LinearOpMode {
                 y = -0.25f;
             }
 
-            double currentHeading = -imu.getAngularOrientation().firstAngle;
+
 //          boolean honk = driveGamepad.left_stick_button;
             double rotateRight = driveGamepad.right_trigger;
             double rotateLeft = driveGamepad.left_trigger;
@@ -268,6 +269,7 @@ public class FieldCentric extends LinearOpMode {
             telemetry.addData("Blue",color.blue());
             telemetry.addData("Green",color.green());
             telemetry.addData("sortActive",sortActive);
+            telemetry.addData("TargetLiftPosition",targetLiftPosition);
             telemetry.update();
         }
     }
