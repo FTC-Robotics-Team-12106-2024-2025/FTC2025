@@ -56,7 +56,7 @@ public class FieldCentric extends LinearOpMode {
         boolean sortActive = false;
 
         //BRAKES
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //encoders
@@ -83,7 +83,7 @@ public class FieldCentric extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
         //REALLY STUPID IDEA NO IDEA IF IT EVEN WORKS I CAN HOPE TO GOD IT DOES THOUGH
-        double currentHeading = new AutonLibrary().currentHeading;//-imu.getAngularOrientation().firstAngle;
+        double currentHeading = -imu.getAngularOrientation().firstAngle;//-imu.getAngularOrientation().firstAngle;
         //All arrays based off the colorFilter variable
         int[][] thresholds = {{130,40,40},{30,50,40},{170,60,100}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
         String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
@@ -113,13 +113,13 @@ public class FieldCentric extends LinearOpMode {
 
             armMotor.setTargetPosition(targetLiftPosition);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armMotor.setPower(0.8);
+            armMotor.setPower(0.65);
 
             if (manipulatorGamepad.dpad_up) {
-                targetLiftPosition =  -775; //206
+                targetLiftPosition =  -240; //206
 
             } else if (manipulatorGamepad.dpad_down) {
-                targetLiftPosition = -1650;//439
+                targetLiftPosition = -350;//439
 
             }
 
@@ -171,7 +171,7 @@ public class FieldCentric extends LinearOpMode {
             //
             // Arm Angle (Joint)
             //
-
+            targetLiftPosition += (-manipulatorGamepad.right_stick_y*50);
 
             //
             // Linear Slide
@@ -183,7 +183,7 @@ public class FieldCentric extends LinearOpMode {
                 slidePose = 0;
             }
             if (slidePose > 6100) {
-                slidePose = 6100;
+                slidePose = 6200;
             }
 
             slide.setTargetPosition(slidePose);
@@ -196,7 +196,7 @@ public class FieldCentric extends LinearOpMode {
                 wristPose = 1;
             }
             if (manipulatorGamepad.right_bumper) {
-                wristPose = 0;
+                wristPose = 0.25f;
             }
             if (!manipulatorGamepad.left_bumper && !manipulatorGamepad.right_bumper) {
                 wristPose = 0.5f;
