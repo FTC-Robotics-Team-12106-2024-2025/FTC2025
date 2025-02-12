@@ -117,7 +117,7 @@ public class FieldCentric extends LinearOpMode {
 
             if (manipulatorGamepad.dpad_up) {
                 targetLiftPosition =  -240; //206
-                slidePose = 6100;
+                slidePose = 6250;
 
             } else if (manipulatorGamepad.dpad_down) {
                 targetLiftPosition = -415;//439
