@@ -53,7 +53,6 @@ public class AutonLibrary extends LinearOpMode {
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -61,7 +60,7 @@ public class AutonLibrary extends LinearOpMode {
 
         waitForStart();
 
-        currentHeading = -imu.getAngularOrientation().firstAngle;
+       currentHeading = -imu.getAngularOrientation().firstAngle;
 
         autonCommands();
     }
@@ -206,11 +205,11 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         //Movement Code
         //
 
-    public final void moveForward (int tenths) {
+    public final void moveForward (int hundreths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
         //stops current time
-        long stop = (durationSucks + tenths*100); //Im using tenths of a second
+        long stop = (durationSucks + hundreths*10); //Im using tenths of a second
         while (System. currentTimeMillis() < stop) {
             //not even sure if this works or not. We can test it anyway
             if (isStopRequested()) {
@@ -344,19 +343,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             Intake(0.75);
         }
     }
-    public void intakeStop(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);//tenths of a second
-        while (System. currentTimeMillis() < stop) {
-            //not even sure if this works or not. We can test it anyway
-            if (isStopRequested()) {
-                stop();
-            }
-            Intake(0);
-        }
-    }
+
 
 
     //
@@ -375,42 +362,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             linearVertical(0);
         }
     }
-    public void slideQuarter(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);//tenths of a second
-        while (System. currentTimeMillis() < stop) {
-            if (isStopRequested()) {
-                stop();
-            }
-            linearVertical(1525);
-        }
-    }
-    public void slideHalf(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);//tenths of a second
-        while (System. currentTimeMillis() < stop) {
-            if (isStopRequested()) {
-                stop();
-            }
-            linearVertical(3050);
-        }
-    }
-    public void slideThreeQuarts(int tenths) {
-        //sets current time
-        long durationSucks = System.currentTimeMillis();
-        //stops current time
-        long stop = (durationSucks + tenths*100);//tenths of a second
-        while (System. currentTimeMillis() < stop) {
-            if (isStopRequested()) {
-                stop();
-            }
-            linearVertical(4575);
-        }
-    }
+
     public void slideMax(int tenths) {
         //sets current time
         long durationSucks = System.currentTimeMillis();
@@ -438,7 +390,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             if (isStopRequested()) {
                 stop();
             }
-            armMove(-775);
+            armMove(-240);
             intakeIn(tenths);
         }
     }
@@ -451,7 +403,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             if (isStopRequested()) {
                 stop();
             }
-            armMove(-1650);
+            armMove(-350);
         }
     }
     //
@@ -501,5 +453,49 @@ public final void startSensor(boolean sortActive, int colorFilter) {
         }
     }
 
+    public void score() {
+        armUp(3);
+        slideMax(3);
+        wristFull(1);
+        intakeOut(1);
+        wristHalf(1);
+        slideZero(3);
+        armDown(3);
+    }
+
+    public void moveenc(int encoder, double speed, boolean horizontal){
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        int leftPos = frontLeft.getCurrentPosition();
+        int rightPos = frontRight.getCurrentPosition();
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(horizontal){}
+        else{
+            if (encoder >= 0){
+                while(leftPos <= encoder || rightPos <= encoder){
+                    frontLeft.setPower(speed);
+                    backLeft.setPower(speed);
+                    frontRight.setPower(speed);
+                    backRight.setPower(speed);
+                }
+                leftPos = frontLeft.getCurrentPosition();
+                rightPos = frontRight.getCurrentPosition();
+
+            }
+            if (encoder < 0) {
+                while (leftPos >= encoder || rightPos >= encoder){
+                    frontLeft.setPower(-speed);
+                    backLeft.setPower(-speed);
+                    frontRight.setPower(-speed);
+                    backRight.setPower(-speed);
+                }
+            }
+        }
+    }
 
 }
