@@ -83,7 +83,7 @@ public class FieldCentric extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
         //REALLY STUPID IDEA NO IDEA IF IT EVEN WORKS I CAN HOPE TO GOD IT DOES THOUGH
-        double currentHeading = new AutonLibrary().currentHeading;//-imu.getAngularOrientation().firstAngle;
+        double currentHeading = -imu.getAngularOrientation().firstAngle;
         //All arrays based off the colorFilter variable
         int[][] thresholds = {{130,40,40},{30,50,40},{170,60,100}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
         String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
@@ -116,7 +116,7 @@ public class FieldCentric extends LinearOpMode {
             armMotor.setPower(0.65);
 
             if (manipulatorGamepad.dpad_up) {
-                targetLiftPosition =  -240; //206
+                targetLiftPosition =  -260; //206
 
             } else if (manipulatorGamepad.dpad_down) {
                 targetLiftPosition = -415;//439
@@ -182,8 +182,8 @@ public class FieldCentric extends LinearOpMode {
             if (slidePose < 0) {
                 slidePose = 0;
             }
-            if (slidePose > 6250) {
-                slidePose = 6250;
+            if (slidePose > 6200) {
+                slidePose = 6200;
             }
 
             slide.setTargetPosition(slidePose);

@@ -26,7 +26,11 @@ public class AutonLibrary extends LinearOpMode {
     public DistanceSensor colorDistance;
     public ElapsedTime timer;
     public Servo wrist;
-    public BNO055IMU imu;
+    protected BNO055IMU imu;
+    public DistanceSensor forward;
+    public DistanceSensor backward;
+    public DistanceSensor left;
+    public DistanceSensor right;
 
     public double currentHeading;
 
@@ -44,19 +48,15 @@ public class AutonLibrary extends LinearOpMode {
         intakeOne = hardwareMap.get(CRServo.class,"intakeOne");
         intakeTwo = hardwareMap.get(CRServo.class,"intakeTwo");
         wrist = hardwareMap.get(Servo.class,"wrist");
+        forward = hardwareMap.get(DistanceSensor.class, "forward");
+        backward = hardwareMap.get(DistanceSensor.class, "backward");
+        left = hardwareMap.get(DistanceSensor.class, "left");
+        right = hardwareMap.get(DistanceSensor.class, "right");
 
         int[][] thresholds = {{1,1,1},{1,1,1},{1,1,1}};// ind 0 = red, ind 1 = blue, ind 2 = green; List of thresholds per sample; red, blue, yellow
         String[] colorData = {"Filtering for RED samples","Filtering for BLUE samples","Filtering for YELLOW samples"};
         int[][] sampleHave = {{211,41,37},{55,89,223},{241,178,14}};
         int[][] sampleLook = {{233,141,138},{155,172,239},{246, 217, 135}};
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -129,6 +129,8 @@ public class AutonLibrary extends LinearOpMode {
             backLeft.setPower(bl / maxNumber);
             backRight.setPower(br / maxNumber);
             //Should do telemetery dataz thingy I hate this.
+
+
         }
     }
 
@@ -218,9 +220,11 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             //not even sure if this works or not. We can test it anyway
             if (isStopRequested()) {
                 stop();
+                moveWheel(0,0);
             }
             moveWheel(0,0.5);
         }
+        moveWheel(0,0);
     }
     public final void moveBackward(int tenths) {
             //sets current time
@@ -394,7 +398,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             if (isStopRequested()) {
                 stop();
             }
-            armMove(-240);
+            armMove(-250);
             intakeIn(tenths);
         }
     }
@@ -407,7 +411,7 @@ public final void startSensor(boolean sortActive, int colorFilter) {
             if (isStopRequested()) {
                 stop();
             }
-            armMove(-350);
+            armMove(-415);
         }
     }
     //
@@ -458,48 +462,75 @@ public final void startSensor(boolean sortActive, int colorFilter) {
     }
 
     public void score() {
-        armUp(3);
-        slideMax(3);
+        armUp(2);
+        slideMax(2);
         wristFull(1);
         intakeOut(1);
-        wristHalf(1);
-        slideZero(3);
-        armDown(3);
     }
 
-    public void moveenc(int encoder, double speed, boolean horizontal){
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        int leftPos = frontLeft.getCurrentPosition();
-        int rightPos = frontRight.getCurrentPosition();
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if(horizontal){}
-        else{
-            if (encoder >= 0){
-                while(leftPos <= encoder || rightPos <= encoder){
-                    frontLeft.setPower(speed);
-                    backLeft.setPower(speed);
-                    frontRight.setPower(speed);
-                    backRight.setPower(speed);
-                }
-                leftPos = frontLeft.getCurrentPosition();
-                rightPos = frontRight.getCurrentPosition();
+    public void movement(double centimeters){
+        double forwardDist = 0;
+        double current = 0;
+        forwardDist = forward.getDistance(DistanceUnit.CM);
+        double backwardDist = backward.getDistance(DistanceUnit.CM);
+        current = forward.getDistance(DistanceUnit.CM);
+        if (centimeters > 0){
+            while ((forwardDist-current) < centimeters){
+                forwardDist = forward.getDistance(DistanceUnit.CM);
+                moveWheel(0,0.5);
+                telemetry.addData("Movement: ", forwardDist + "/n" + current);
+                telemetry.update();
+            }
+            moveWheel(0,0);
+        }
+        if (centimeters < 0) {
+            while ((forwardDist-current) > centimeters) {
+                forwardDist = forward.getDistance(DistanceUnit.CM);
+                moveWheel(0,-0.5);
+            }
+            moveWheel(0,0);
+        }
+        moveWheel(0,0);
+
+    }
+
+    public void strafe(double centimeters){
+        double leftDist = left.getDistance(DistanceUnit.CM);
+        double rightDist = right.getDistance(DistanceUnit.CM);
+        double current = left.getDistance(DistanceUnit.CM);
+        if (centimeters < 0){
+            while ((leftDist-current) > centimeters){
+                leftDist = left.getDistance(DistanceUnit.CM);
+                moveWheel(-0.5,0);
 
             }
-            if (encoder < 0) {
-                while (leftPos >= encoder || rightPos >= encoder){
-                    frontLeft.setPower(-speed);
-                    backLeft.setPower(-speed);
-                    frontRight.setPower(-speed);
-                    backRight.setPower(-speed);
-                }
+            moveWheel(0,0);
+        }
+        if (centimeters > 0) {
+            while ((leftDist-current) > centimeters) {
+                leftDist = right.getDistance(DistanceUnit.CM);
+                moveWheel(0.5,0);
+            }
+            moveWheel(0,0);
+        }
+        moveWheel(0,0);
+    }
+
+
+    public void gyrorotate(int degrees){
+        double currentHeading = -imu.getAngularOrientation().firstAngle;
+        double goalHeading = currentHeading + Math.toRadians(degrees);
+        while (goalHeading != currentHeading){
+            currentHeading = -imu.getAngularOrientation().firstAngle;
+            if (goalHeading > currentHeading){
+                rotateLeft(1);
+            }
+            else {
+                rotateRight(1);
             }
         }
+
     }
+
 
 }

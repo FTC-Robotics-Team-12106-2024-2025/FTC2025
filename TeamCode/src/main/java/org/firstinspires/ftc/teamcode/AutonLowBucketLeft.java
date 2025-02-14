@@ -6,14 +6,14 @@ public class AutonLowBucketLeft extends AutonLibrary {
     public void autonCommands() {
         wristHalf(1);
         //moveForward(1);
-        strafeLeft(1);
-        rotateLeft(2);
+        movement(10);
+        gyrorotate(135);
         score();
-
-
-
-
-
-
+        moveForward(20);
+        movement(-10);
+        wristHalf(1);
+        slideZero(2);
+        armDown(2);
+        gyrorotate( 45);
     }
 }
