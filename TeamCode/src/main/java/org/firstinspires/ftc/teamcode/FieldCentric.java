@@ -116,12 +116,13 @@ public class FieldCentric extends LinearOpMode {
             armMotor.setPower(0.65);
 
             if (manipulatorGamepad.dpad_up) {
-                targetLiftPosition =  -260; //206
+                targetLiftPosition = -775; //206
+                wristPose = 1;
 
             } else if (manipulatorGamepad.dpad_down) {
-                targetLiftPosition = -415;//439
-
-            }
+                targetLiftPosition = -1660;//439
+            } else if (manipulatorGamepad.dpad_left)
+                targetLiftPosition = 0;
 
             //
             // Drive
